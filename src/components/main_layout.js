@@ -214,7 +214,7 @@ const MainLayout = () => {
             </aside>
 
             <main className="p-4 md:ml-64 h-auto">
-                <AddUser />
+                <UserList />
             </main>
         </div>
     )
