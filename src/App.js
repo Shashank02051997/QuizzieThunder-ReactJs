@@ -5,6 +5,7 @@ import MainLayout from './components/main_layout';
 import AdminList from './pages/admin_list';
 import UserList from './pages/user_list';
 import AddUser from './pages/add_user';
+import ShowUserDetails from './pages/show_user_details';
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
           <Route index element={<AdminList />} />
           <Route path='user' element={<UserList />} />
           <Route path='add-user' element={<AddUser />} />
+          <Route path='show-user-details' element={<ShowUserDetails />} />
         </Route>
       </Routes>
     </Router>

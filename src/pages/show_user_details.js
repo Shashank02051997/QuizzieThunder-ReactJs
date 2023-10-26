@@ -1,6 +1,6 @@
 import React from "react";
 
-const ShowUser = () => {
+const ShowUserDetails = () => {
     return (
         <div className="bg-gray-50 h-screen">
             <section className="bg-white dark:bg-gray-900 shadow-md mt-10">
@@ -37,4 +37,4 @@ const ShowUser = () => {
     );
 }
 
-export default ShowUser;
+export default ShowUserDetails;

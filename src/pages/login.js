@@ -4,8 +4,11 @@ import axios from "axios";
 import { base_url } from "../utils/base_url";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { Link, useNavigate } from "react-router-dom";
+
 
 const Login = () => {
+    const navigate = useNavigate();
     const [showPassword, setShowPassword] = useState(false);
     const [loading, setLoading] = useState(false);
 
@@ -46,10 +49,12 @@ const Login = () => {
                     if (codeValue === 404) {
                         toast.error(response.data.message);
                     } else {
-                        const result = response.data.result;
+                        const loginResult = response.data.result;
                         toast.success(response.data.message);
                         formik.resetForm();
-                        console.log("Result:", result);
+                        //console.log("Login Result:", loginResult);
+                        sessionStorage.setItem("login_result", JSON.stringify(loginResult));
+                        navigate("/admin");
                     }
                 }
             } else {

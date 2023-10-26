@@ -1,10 +1,26 @@
-import React from "react";
-import AdminList from '../pages/admin_list';
-import UserList from "../pages/user_list";
-import AddUser from "../pages/add_user";
-import ShowUser from "../pages/show_user";
+import React, { useState, useEffect } from "react";
+import { Outlet, Link } from "react-router-dom";
 
 const MainLayout = () => {
+    useEffect(() => {
+        const loginResult = JSON.parse(sessionStorage.getItem('login_result'));
+        console.log("Login Result Email:", loginResult);
+    }, []);
+
+    const navigationOptions = [
+        { route_to: "/admin", label: "Admin" },
+        { route_to: "/admin/user", label: "User" },
+        // Add more navigation options as needed
+    ];
+
+    const initialComponent = navigationOptions[0].route_to; // Set the initial component based on the first item in navigationOptions
+
+    const [activeComponent, setActiveComponent] = useState(initialComponent); // Default to "admin list"
+
+    const handleComponentChange = (component) => {
+        setActiveComponent(component);
+    };
+
     return (
         <div className="antialiased bg-gray-50">
             <nav className="bg-white border-b border-gray-200 px-4 py-2.5 fixed left-0 right-0 top-0 z-40">
@@ -14,7 +30,7 @@ const MainLayout = () => {
 
                         <button
                             type="button"
-                            className="flex mx-3 text-sm bg-gray-800 rounded-full md:mr-0 focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600"
+                            className="flex mx-3 text-sm bg-gray-800 rounded-full md:mr-0 focus:ring-4 focus:ring-gray-300"
                             id="user-menu-button"
                             aria-expanded="false"
                             data-dropdown-toggle="dropdown"
@@ -28,46 +44,46 @@ const MainLayout = () => {
                         </button>
                         {/*<!-- Dropdown menu -->*/}
                         <div
-                            className="hidden z-50 my-4 w-56 text-base list-none bg-white rounded divide-y divide-gray-100 shadow dark:bg-gray-700 dark:divide-gray-600 "
+                            className="hidden z-50 my-4 w-56 text-base list-none bg-white rounded divide-y divide-gray-100 shadow "
                             id="dropdown"
                         >
                             <div className="py-3 px-4">
                                 <span
-                                    className="block text-sm font-semibold text-gray-900 dark:text-white"
+                                    className="block text-sm font-semibold text-gray-900 "
                                 >Neil Sims</span
                                 >
                                 <span
-                                    className="block text-sm text-gray-900 truncate dark:text-white"
+                                    className="block text-sm text-gray-900 truncate "
                                 >name@flowbite.com</span
                                 >
                             </div>
                             <ul
-                                className="py-1 text-gray-700 dark:text-gray-300"
+                                className="py-1 text-gray-700 "
                                 aria-labelledby="dropdown"
                             >
                                 <li>
                                     <a
                                         href="#"
-                                        className="block py-2 px-4 text-sm hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-400 dark:hover:text-white"
+                                        className="block py-2 px-4 text-sm hover:bg-gray-100 "
                                     >My profile</a
                                     >
                                 </li>
                                 <li>
                                     <a
                                         href="#"
-                                        className="block py-2 px-4 text-sm hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-400 dark:hover:text-white"
+                                        className="block py-2 px-4 text-sm hover:bg-gray-100 "
                                     >Account settings</a
                                     >
                                 </li>
                             </ul>
                             <ul
-                                className="py-1 text-gray-700 dark:text-gray-300"
+                                className="py-1 text-gray-700 "
                                 aria-labelledby="dropdown"
                             >
                                 <li>
                                     <a
                                         href="#"
-                                        className="flex items-center py-2 px-4 text-sm hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                                        className="flex items-center py-2 px-4 text-sm hover:bg-gray-100 "
                                     ><svg
                                         className="mr-2 w-5 h-5 text-gray-400"
                                         fill="currentColor"
@@ -86,7 +102,7 @@ const MainLayout = () => {
                                 <li>
                                     <a
                                         href="#"
-                                        className="flex items-center py-2 px-4 text-sm hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                                        className="flex items-center py-2 px-4 text-sm hover:bg-gray-100 "
                                     ><svg
                                         className="mr-2 w-5 h-5 text-gray-400"
                                         fill="currentColor"
@@ -103,12 +119,12 @@ const MainLayout = () => {
                                 <li>
                                     <a
                                         href="#"
-                                        className="flex justify-between items-center py-2 px-4 text-sm hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                                        className="flex justify-between items-center py-2 px-4 text-sm hover:bg-gray-100 "
                                     >
                                         <span className="flex items-center">
                                             <svg
                                                 aria-hidden="true"
-                                                className="mr-2 w-5 h-5 text-primary-600 dark:text-primary-500"
+                                                className="mr-2 w-5 h-5 text-primary-600 "
                                                 fill="currentColor"
                                                 viewBox="0 0 20 20"
                                                 xmlns="http://www.w3.org/2000/svg"
@@ -138,13 +154,13 @@ const MainLayout = () => {
                                 </li>
                             </ul>
                             <ul
-                                className="py-1 text-gray-700 dark:text-gray-300"
+                                className="py-1 text-gray-700 "
                                 aria-labelledby="dropdown"
                             >
                                 <li>
                                     <a
                                         href="#"
-                                        className="block py-2 px-4 text-sm hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                                        className="block py-2 px-4 text-sm hover:bg-gray-100 "
                                     >Sign out</a
                                     >
                                 </li>
@@ -157,11 +173,11 @@ const MainLayout = () => {
             {/*<!-- Sidebar -->*/}
 
             <aside
-                className="fixed top-0 left-0 z-50 w-64 h-screen transition-transform -translate-x-full bg-white border-r border-gray-200 md:translate-x-0 dark:bg-gray-800 dark:border-gray-700"
+                className="fixed top-0 left-0 z-50 w-64 h-screen transition-transform -translate-x-full bg-white border-r border-gray-200 md:translate-x-0 "
                 aria-label="Sidenav"
                 id="drawer-navigation">
 
-                <div className="overflow-y-auto px-3 h-full bg-white dark:bg-gray-800">
+                <div className="overflow-y-auto px-3 h-full bg-white ">
                     <div className="pt-4 pb-8">
                         <a href="https://flowbite.com" class="flex items-center justify-start">
                             <img
@@ -169,44 +185,24 @@ const MainLayout = () => {
                                 class="mr-3 h-8"
                                 alt="Quizzie Thunder Logo"
                             />
-                            <span class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">Quizzie Thunder</span>
+                            <span class="self-center text-2xl font-semibold whitespace-nowrap ">Quizzie Thunder</span>
                         </a>
                     </div>
                     <ul className="space-y-2">
-                        <li>
-                            <a href="#"
-                                className="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
-                            >
-                                <svg
-                                    aria-hidden="true"
-                                    className="w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
-                                    fill="currentColor"
-                                    viewBox="0 0 20 20"
-                                    xmlns="http://www.w3.org/2000/svg"
+                        {navigationOptions.map((option) => (
+                            <li key={option.route_to}>
+                                <Link
+                                    to={option.route_to}
+                                    className={`flex items-center p-2 text-base font-medium ${activeComponent === option.route_to
+                                        ? "text-gray-900 bg-gray-100"
+                                        : "text-gray-500"
+                                        } rounded-lg  hover:bg-gray-200 group`}
+                                    onClick={() => handleComponentChange(option.route_to)}
                                 >
-                                    <path d="M2 10a8 8 0 018-8v8h8a8 8 0 11-16 0z"></path>
-                                    <path d="M12 2.252A8.014 8.014 0 0117.748 8H12V2.252z"></path>
-                                </svg>
-                                <span className="ml-3">Admin</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#"
-                                className="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
-                            >
-                                <svg
-                                    aria-hidden="true"
-                                    className="w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
-                                    fill="currentColor"
-                                    viewBox="0 0 20 20"
-                                    xmlns="http://www.w3.org/2000/svg"
-                                >
-                                    <path d="M2 10a8 8 0 018-8v8h8a8 8 0 11-16 0z"></path>
-                                    <path d="M12 2.252A8.014 8.014 0 0117.748 8H12V2.252z"></path>
-                                </svg>
-                                <span className="ml-3">User</span>
-                            </a>
-                        </li>
+                                    {option.label}
+                                </Link>
+                            </li>
+                        ))}
                     </ul>
 
                 </div>
@@ -214,7 +210,7 @@ const MainLayout = () => {
             </aside>
 
             <main className="p-4 md:ml-64 h-auto">
-                <UserList />
+                <Outlet />
             </main>
         </div>
     )
