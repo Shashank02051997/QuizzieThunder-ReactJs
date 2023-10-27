@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import { base_url } from "../utils/base_url";
 import { ToastContainer, toast } from 'react-toastify';
@@ -9,20 +9,33 @@ const AdminList = () => {
         const loginResult = JSON.parse(localStorage.getItem('login_result'));
         console.log("Login Result:", loginResult);
         getAdminList(loginResult)
+
+        // Add event listener to the document to close the dropdown on outside click
+        function handleClickOutside(event) {
+            if (rowDropdownRef.current && !rowDropdownRef.current.contains(event.target)) {
+                closeRowDropDown();
+            }
+        }
+
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
     }, []);
 
     const [loading, setLoading] = useState(false);
     const [adminListResult, setAdminListResult] = useState([]);
-    // Add state variables to manage dropdown visibility for each row
-    const [dropdownVisibility, setDropdownVisibility] = useState({});
+    const [activeDropdown, setActiveDropdown] = useState(null);
+    // Ref to store a reference to the dropdown container
+    const rowDropdownRef = useRef(null);
 
 
-    // Function to toggle dropdown visibility for a specific row
     const toggleRowDropdown = (rowId) => {
-        setDropdownVisibility(prevState => ({
-            ...prevState,
-            [rowId]: !prevState[rowId],
-        }));
+        setActiveDropdown(rowId === activeDropdown ? null : rowId);
+    };
+
+    const closeRowDropDown = () => {
+        setActiveDropdown(null);
     };
 
     const getAdminList = async (data) => {
@@ -64,7 +77,7 @@ const AdminList = () => {
                     <div className="space-y-3 md:space-y-0 md:space-x-4 p-4">
                         <h1 className="text-3xl font-medium">Admin List</h1>
                     </div>
-                    {loading && (
+                    {loading ? (
                         <div className="mx-auto max-w-screen-xl max-h-screen px-4  flex-col items-center justify-center text-center">
                             <div role="status">
                                 <svg aria-hidden="true" class="inline w-8 h-8 mr-2 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -74,8 +87,8 @@ const AdminList = () => {
                                 <span class="sr-only">Loading...</span>
                             </div>
                         </div>
-                    )}
-                    {!loading && (
+                    ) : null}
+                    {!loading ? (
                         <div className="mx-auto max-w-screen-xl px-4 lg:px-12">
                             {/*<!-- Start coding here -->*/}
                             <div className="bg-white relative shadow-md sm:rounded-lg overflow-hidden">
@@ -107,7 +120,7 @@ const AdminList = () => {
                                                             </svg>
                                                         </button>
                                                         {/* Drop down */}
-                                                        <div id={`apple-imac-27-dropdown-${admin._id}`} className={`z-10 w-44 bg-white rounded divide-y divide-gray-100 shadow absolute right-0 ${dropdownVisibility[admin._id] ? 'block' : 'hidden'} ${index >= adminListResult.length - 2 ? '-top-20' : 'top-10'}`}
+                                                        <div ref={rowDropdownRef} id={`apple-imac-27-dropdown-${admin._id}`} className={`z-10 w-44 bg-white rounded divide-y divide-gray-100 shadow absolute right-0 ${activeDropdown === admin._id ? 'block' : 'hidden'} ${index >= adminListResult.length - 2 ? '-top-20' : 'top-10'}`}
                                                         >
                                                             <ul className="py-1 text-sm" aria-labelledby={`apple-imac-27-dropdown-button-${admin._id}`}>
                                                                 <li>
@@ -139,7 +152,7 @@ const AdminList = () => {
                                 </div>
                             </div>
                         </div>
-                    )}
+                    ) : null}
 
                 </section>
                 {/*<!-- End block -->*/}
