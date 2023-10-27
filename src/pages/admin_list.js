@@ -6,7 +6,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { Link } from "react-router-dom";
 const AdminList = () => {
     useEffect(() => {
-        const loginResult = JSON.parse(sessionStorage.getItem('login_result'));
+        const loginResult = JSON.parse(localStorage.getItem('login_result'));
         console.log("Login Result Email:", loginResult);
         getAdminList(loginResult)
     }, []);
@@ -35,7 +35,7 @@ const AdminList = () => {
 
         try {
             // Perform the API GET call using Axios
-            const response = await axios.get(`${base_url}/user/all-users`, { headers });
+            const response = await axios.get(`${base_url}/user/all-users?isAdmin=true`, { headers });
             if (response.status === 200) {
                 if (response.data && response.data.code) {
                 }

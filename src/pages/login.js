@@ -1,14 +1,21 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useFormik } from 'formik';
 import axios from "axios";
 import { base_url } from "../utils/base_url";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 
 const Login = () => {
     const navigate = useNavigate();
+    useEffect(() => {
+        let loginResult = localStorage.getItem('login_result')
+        console.log("loginResult", loginResult);
+        if (loginResult && loginResult !== null && loginResult.token !== null) {
+            navigate("/admin");
+        }
+    }, [])
     const [showPassword, setShowPassword] = useState(false);
     const [loading, setLoading] = useState(false);
 
@@ -45,15 +52,14 @@ const Login = () => {
             const response = await axios.post(`${base_url}/user/admin-login`, values);
             if (response.status === 200) {
                 if (response.data && response.data.code) {
-                    const codeValue = response.data.code;
-                    if (codeValue === 404) {
+                    if (response.data.code === 404) {
                         toast.error(response.data.message);
                     } else {
                         const loginResult = response.data.result;
                         toast.success(response.data.message);
                         formik.resetForm();
                         //console.log("Login Result:", loginResult);
-                        sessionStorage.setItem("login_result", JSON.stringify(loginResult));
+                        localStorage.setItem("login_result", JSON.stringify(loginResult));
                         navigate("/admin");
                     }
                 }

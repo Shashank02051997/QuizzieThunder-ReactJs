@@ -1,26 +1,15 @@
-import React, { useState, useEffect } from "react";
-import { Outlet, Link } from "react-router-dom";
+import React from "react";
+import { Outlet, Link, useLocation } from "react-router-dom";
 
 const MainLayout = () => {
-    useEffect(() => {
-        const loginResult = JSON.parse(sessionStorage.getItem('login_result'));
-        console.log("Login Result Email:", loginResult);
-    }, []);
-
+    const location = useLocation();
     const navigationOptions = [
         { route_to: "/admin", label: "Admin" },
         { route_to: "/admin/user", label: "User" },
-        // Add more navigation options as needed
+
     ];
 
-    const initialComponent = navigationOptions[0].route_to; // Set the initial component based on the first item in navigationOptions
-
-    const [activeComponent, setActiveComponent] = useState(initialComponent); // Default to "admin list"
-
-    const handleComponentChange = (component) => {
-        setActiveComponent(component);
-    };
-
+    const activeComponent = location.pathname;
     return (
         <div className="antialiased bg-gray-50">
             <nav className="bg-white border-b border-gray-200 px-4 py-2.5 fixed left-0 right-0 top-0 z-40">
@@ -197,7 +186,7 @@ const MainLayout = () => {
                                         ? "text-gray-900 bg-gray-100"
                                         : "text-gray-500"
                                         } rounded-lg  hover:bg-gray-200 group`}
-                                    onClick={() => handleComponentChange(option.route_to)}
+
                                 >
                                     {option.label}
                                 </Link>
