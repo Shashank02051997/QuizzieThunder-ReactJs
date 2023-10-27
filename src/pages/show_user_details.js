@@ -3,16 +3,20 @@ import axios from "axios";
 import { base_url } from "../utils/base_url";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { useLocation } from "react-router-dom";
+
 
 const ShowUserDetails = () => {
     useEffect(() => {
         const loginResult = JSON.parse(localStorage.getItem('login_result'));
-        console.log("Login Result Email:", loginResult);
+        console.log("Login Result:", loginResult);
+        console.log("User Id = ", state);
         getUserDetail(loginResult)
     }, []);
 
     const [loading, setLoading] = useState(false);
     const [userResult, setUserResult] = useState({});
+    const { state } = useLocation();
 
     const getUserDetail = async (data) => {
         const token = data.token;
