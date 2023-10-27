@@ -7,7 +7,7 @@ import { Link } from "react-router-dom";
 const AdminList = () => {
     useEffect(() => {
         const loginResult = JSON.parse(localStorage.getItem('login_result'));
-        console.log("Login Result Email:", loginResult);
+        console.log("Login Result:", loginResult);
         getAdminList(loginResult)
     }, []);
 

@@ -8,19 +8,23 @@ import { useNavigate } from "react-router-dom";
 
 
 const Login = () => {
-    const navigate = useNavigate();
+
     useEffect(() => {
         let loginResult = localStorage.getItem('login_result')
-        console.log("loginResult", loginResult);
         if (loginResult && loginResult !== null && loginResult.token !== null) {
             navigate("/admin");
         }
     }, [])
+    const navigate = useNavigate();
     const [showPassword, setShowPassword] = useState(false);
     const [loading, setLoading] = useState(false);
 
     const formik = useFormik({
         initialValues: { mobile: '', password: '' },
+        initialErrors: {
+            mobile: 'Mobile number is required',
+            password: 'Password is required',
+        },
         validate: (values) => {
             const errors = {};
             if (!values.mobile) {
@@ -58,7 +62,6 @@ const Login = () => {
                         const loginResult = response.data.result;
                         toast.success(response.data.message);
                         formik.resetForm();
-                        //console.log("Login Result:", loginResult);
                         localStorage.setItem("login_result", JSON.stringify(loginResult));
                         navigate("/admin");
                     }
