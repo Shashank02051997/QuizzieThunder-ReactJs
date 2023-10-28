@@ -6,6 +6,7 @@ import AdminList from './pages/admin_list';
 import UserList from './pages/user_list';
 import AddUser from './pages/add_user';
 import ShowUserDetails from './pages/show_user_details';
+import UpdateUserDetails from './pages/update_user_details';
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
           <Route path='user' element={<UserList />} />
           <Route path='add-user' element={<AddUser />} />
           <Route path='show-user-details' element={<ShowUserDetails />} />
+          <Route path='update-user-details' element={<UpdateUserDetails />} />
         </Route>
       </Routes>
     </Router>

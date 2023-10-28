@@ -60,21 +60,21 @@ const MainLayout = () => {
             <nav className="bg-white border-b border-gray-200 px-4 py-2.5 fixed left-0 right-0 top-0 z-40">
                 <div className="flex flex-wrap justify-end items-center">
 
-                    <div className="flex items-center lg:order-2">
+                    <div className="flex items-center">
 
-                        <button
+                        {loginResult ? (<button
                             type="button"
-                            className="flex mx-3 text-sm bg-gray-800 rounded-full focus:ring-4 focus:ring-gray-300"
+                            className="flex mx-3 text-sm bg-gray-300 rounded-full focus:ring-4 focus:ring-gray-300"
                             id="user-menu-button"
                             aria-expanded="false"
                             onClick={toggleProfileDropDownVisibility}>
                             <span className="sr-only">Open user menu</span>
                             <img
                                 className="w-8 h-8 rounded-full"
-                                src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/michael-gough.png"
+                                src={loginResult.profile_pic}
                                 alt="user"
                             />
-                        </button>
+                        </button>) : null}
                         {/*<!-- Dropdown menu -->*/}
                         {loginResult ? (
                             <div
@@ -109,6 +109,7 @@ const MainLayout = () => {
                                     </li>
                                 </ul>
                             </div>
+
                         ) : null}
                     </div>
                 </div>
