@@ -3,7 +3,7 @@ import axios from "axios";
 import { base_url } from "../utils/base_url";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 const AdminList = () => {
     useEffect(() => {
         const loginResult = JSON.parse(localStorage.getItem('login_result'));
@@ -23,6 +23,7 @@ const AdminList = () => {
         };
     }, []);
 
+    const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
     const [adminListResult, setAdminListResult] = useState([]);
     const [activeRowDropdown, setActiveRowDropdown] = useState(null);
@@ -38,6 +39,10 @@ const AdminList = () => {
         //setActiveRowDropdown(null);
     };
 
+    const openUserPreview = (admin) => {
+        navigate("/admin/show-user-details", { state: { "user": admin } });
+    };
+
     const getAdminList = async (data) => {
         const token = data.token;
         const headers = {
@@ -50,10 +55,8 @@ const AdminList = () => {
             // Perform the API GET call using Axios
             const response = await axios.get(`${base_url}/user/all-users?isAdmin=true`, { headers });
             if (response.status === 200) {
-                if (response.data && response.data.code) {
-                }
                 if (response.data && response.data.code === 200) {
-                    setAdminListResult(response.data.users); // Set the adminListResult state with the data
+                    setAdminListResult(response.data.users);
                     toast.success("List Fetched successfully");
                 } else {
                     toast.error(response.data.message);
@@ -73,7 +76,7 @@ const AdminList = () => {
         <>
             <div>
                 {/*<!-- Start block -->*/}
-                <section className="bg-gray-50 p-3 sm:p-5 antialiased mt-10">
+                <section className="bg-gray-50 p-3 antialiased mt-10">
                     <div className="space-y-3 md:space-y-0 md:space-x-4 p-4">
                         <h1 className="text-3xl font-medium">Admin List</h1>
                     </div>
@@ -89,11 +92,11 @@ const AdminList = () => {
                         </div>
                     ) : null}
                     {!loading ? (
-                        <div className="mx-auto max-w-screen-xl px-4 lg:px-12">
+                        <div className="mx-auto max-w-screen-xl px-4">
                             {/*<!-- Start coding here -->*/}
-                            <div className="bg-white relative shadow-md sm:rounded-lg overflow-hidden">
+                            <div className="bg-white relative shadow-md rounded-lg">
 
-                                <div className="overflow-x-auto">
+                                <div className="overflow-x-visible">
                                     <table className="w-full text-sm text-left text-gray-500">
                                         <thead className="text-xs text-gray-700 uppercase bg-gray-50">
                                             <tr>
@@ -120,26 +123,16 @@ const AdminList = () => {
                                                             </svg>
                                                         </button>
                                                         {/* Drop down */}
-                                                        <div ref={rowDropdownRef} id={`apple-imac-27-dropdown-${admin._id}`} className={`z-10 w-44 bg-white rounded divide-y divide-gray-100 shadow absolute right-0 ${activeRowDropdown === admin._id ? 'block' : 'hidden'} ${index >= adminListResult.length - 2 ? '-top-20' : 'top-10'}`}
-                                                        >
+                                                        <div ref={rowDropdownRef} id={`apple-imac-27-dropdown-${admin._id}`} className={`z-10 w-44 bg-white rounded divide-y divide-gray-100 shadow absolute right-0 ${activeRowDropdown === admin._id ? 'block' : 'hidden'} ${index >= adminListResult.length - 2 ? '-top-10' : 'top-10'}`}>
                                                             <ul className="py-1 text-sm" aria-labelledby={`apple-imac-27-dropdown-button-${admin._id}`}>
                                                                 <li>
-                                                                    <Link to="/admin/edit-user-details" type="button" className="flex w-full items-center py-2 px-4 hover:bg-gray-100 text-gray-700 ">
-                                                                        <svg className="w-4 h-4 mr-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                                                                            <path d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z" />
-                                                                            <path fillRule="evenodd" clipRule="evenodd" d="M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" />
-                                                                        </svg>
-                                                                        Edit
-                                                                    </Link>
-                                                                </li>
-                                                                <li>
-                                                                    <Link to="/admin/show-user-details" type="button" className="flex w-full items-center py-2 px-4 hover:bg-gray-100 text-gray-700">
+                                                                    <button onClick={() => openUserPreview(admin)} type="button" className="flex w-full items-center py-2 px-4 hover:bg-gray-100 text-gray-700">
                                                                         <svg className="w-4 h-4 mr-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                                                                             <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
                                                                             <path fillRule="evenodd" clipRule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" />
                                                                         </svg>
                                                                         Preview
-                                                                    </Link>
+                                                                    </button>
                                                                 </li>
                                                             </ul>
                                                         </div>
@@ -161,7 +154,7 @@ const AdminList = () => {
                 <div id="deleteModal" tabindex="-1" aria-hidden="true" className="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
                     <div className="relative p-4 w-full max-w-md max-h-full">
                         {/*<!-- Modal content -->*/}
-                        <div className="relative p-4 text-center bg-white rounded-lg shadow sm:p-5">
+                        <div className="relative p-4 text-center bg-white rounded-lg shadow">
                             <button type="button" className="text-gray-400 absolute top-2.5 right-2.5 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center" data-modal-toggle="deleteModal">
                                 <svg aria-hidden="true" className="w-5 h-5" fill="currentColor" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                                     <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />

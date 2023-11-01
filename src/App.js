@@ -7,6 +7,10 @@ import UserList from './pages/user_list';
 import AddUser from './pages/add_user';
 import ShowUserDetails from './pages/show_user_details';
 import UpdateUserDetails from './pages/update_user_details';
+import QuizCategoryList from './pages/quiz_category_list';
+import AddQuizCategory from './pages/add_quiz_category';
+import UpdateQuizCategory from './pages/update_quiz_category';
+import ShowQuizCategoryDetails from './pages/show_quiz_category_details';
 
 function App() {
   return (
@@ -19,6 +23,11 @@ function App() {
           <Route path='add-user' element={<AddUser />} />
           <Route path='show-user-details' element={<ShowUserDetails />} />
           <Route path='update-user-details' element={<UpdateUserDetails />} />
+          <Route path='quiz-category' element={<QuizCategoryList />} />
+          <Route path='add-quiz-category' element={<AddQuizCategory />} />
+          <Route path='update-quiz-category' element={<UpdateQuizCategory />} />
+          <Route path='show-quiz-category-details' element={<ShowQuizCategoryDetails />} />
+
         </Route>
       </Routes>
     </Router>

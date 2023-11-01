@@ -48,10 +48,14 @@ const MainLayout = () => {
         navigate("/");
     };
 
+    const openUserPreview = () => {
+        navigate("/admin/show-user-details", { state: { "user": loginResult } });
+    };
 
     const navigationOptions = [
         { route_to: "/admin", label: "Admin" },
         { route_to: "/admin/user", label: "User" },
+        { route_to: "/admin/quiz-category", label: "Quiz Categories" },
     ];
 
     const activeComponent = location.pathname;
@@ -91,8 +95,8 @@ const MainLayout = () => {
                                     className="py-1 text-gray-700 "
                                     aria-labelledby="dropdown">
                                     <li>
-                                        <Link
-                                            className="block py-2 px-4 text-sm hover:bg-gray-100 ">My profile</Link>
+                                        <button onClick={() => openUserPreview()}
+                                            className="block py-2 px-4 w-full text-sm text-left hover:bg-gray-100 hover:text-primary-700">My profile</button>
                                     </li>
 
                                 </ul>

@@ -71,14 +71,12 @@ const AddUser = () => {
 
         try {
             // Perform the API POST call using Axios
-            const response = await axios.post(`${base_url}/user/register`, values, headers);
+            const response = await axios.post(`${base_url}/user/register`, values, { headers });
             if (response.status === 200) {
                 if (response.data && response.data.code) {
                     if (response.data.code === 404) {
                         toast.error(response.data.message);
                     } else {
-                        const result = response.data.result;
-                        console.log(result);
                         toast.success(response.data.message);
                         formik.resetForm();
                     }
