@@ -11,6 +11,9 @@ import QuizCategoryList from './pages/quiz_category_list';
 import AddQuizCategory from './pages/add_quiz_category';
 import UpdateQuizCategory from './pages/update_quiz_category';
 import ShowQuizCategoryDetails from './pages/show_quiz_category_details';
+import QuizList from './pages/quiz_list';
+import AddQuiz from './pages/add_quiz';
+import ShowQuizDetails from './pages/show_quiz_details';
 
 function App() {
   return (
@@ -27,7 +30,9 @@ function App() {
           <Route path='add-quiz-category' element={<AddQuizCategory />} />
           <Route path='update-quiz-category' element={<UpdateQuizCategory />} />
           <Route path='show-quiz-category-details' element={<ShowQuizCategoryDetails />} />
-
+          <Route path='quiz' element={<QuizList />} />
+          <Route path='add-quiz' element={<AddQuiz />} />
+          <Route path='show-quiz-details' element={<ShowQuizDetails />} />
         </Route>
       </Routes>
     </Router>
