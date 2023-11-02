@@ -6,16 +6,46 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 const AddQuiz = () => {
+    const [quizCategoryListResult, setQuizCategoryListResult] = useState([]);
+    const [loginResult, setLoginResult] = useState(null);
+    const [loading, setLoading] = useState(false);
+
     useEffect(() => {
         const storedLoginResult = JSON.parse(localStorage.getItem('login_result'));
         console.log("Login Result:", storedLoginResult);
         setLoginResult(storedLoginResult);
-
+        getQuizCategoryList(storedLoginResult);
     }, [])
 
-    const [loginResult, setLoginResult] = useState(null);
-    const [loading, setLoading] = useState(false);
-    const [showPassword, setShowPassword] = useState(false);
+    const getQuizCategoryList = async (data) => {
+        const token = data.token;
+        const headers = {
+            Authorization: `Bearer ${token}`,
+        };
+
+        setLoading(true);
+
+        try {
+            // Perform the API GET call using Axios
+            const response = await axios.get(`${base_url}/quiz/category/all`, { headers });
+            if (response.status === 200) {
+                if (response.data && response.data.code === 200) {
+                    setQuizCategoryListResult(response.data.quiz_categories);
+                    toast.success("List Fetched successfully");
+                } else {
+                    toast.error(response.data.message);
+                }
+            } else {
+                // Handle errors, e.g., display an error message
+                console.error("Error:", response.data);
+            }
+        } catch (error) {
+            // Handle network errors
+            console.error("Network Error:", error);
+        } finally {
+            setLoading(false);
+        }
+    };
 
     const formik = useFormik({
         initialValues: { title: '', description: '', quiz_category: '' },
@@ -97,14 +127,28 @@ const AddQuiz = () => {
                                         <div className="text-red-500">{formik.errors.title}</div>
                                     )}
                                 </div>
+
                                 <div className="w-full">
-                                    <label htmlFor="quiz_category" className="block mb-2 text-sm font-medium text-gray-900">Quiz Category</label>
-                                    <input type="text" name="quiz_category" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5" placeholder="Math" onChange={formik.handleChange}
-                                        value={formik.values.quiz_category} />
+                                    <label htmlFor="quiz_category" className="block mb-2 text-sm font-medium text-gray-900">
+                                        Quiz Category
+                                    </label>
+                                    <select
+                                        name="quiz_category"
+                                        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                                        onChange={formik.handleChange}
+                                        value={formik.values.quiz_category}>
+                                        <option value="" disabled>Select a category</option>
+                                        {quizCategoryListResult.map((category) => (
+                                            <option key={category._id} value={category._id}>
+                                                {category.title}
+                                            </option>
+                                        ))}
+                                    </select>
                                     {formik.touched.quiz_category && formik.errors.quiz_category && (
                                         <div className="text-red-500">{formik.errors.quiz_category}</div>
                                     )}
                                 </div>
+
                             </div>
                             <div className="w-full mt-4">
                                 <label htmlFor="description" className="block mb-2 text-sm font-medium text-gray-900">Description</label>
