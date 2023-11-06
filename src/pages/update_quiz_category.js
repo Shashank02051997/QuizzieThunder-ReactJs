@@ -4,29 +4,27 @@ import axios from "axios";
 import { base_url } from "../utils/base_url";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { Link, useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 
 const UpdateQuizCategory = () => {
     const { state } = useLocation();
     const [loginResult, setLoginResult] = useState(null);
     const [loading, setLoading] = useState(false);
-    const [quizCategoryResult, setQuizCategoryResult] = useState({});
 
     useEffect(() => {
         const storedLoginResult = JSON.parse(localStorage.getItem('login_result'));
         console.log("Login Result:", storedLoginResult);
         setLoginResult(storedLoginResult);
-        setQuizCategoryResult(state.quizCategory);
     }, []);
 
     const formik = useFormik({
         initialValues: {
-            title: quizCategoryResult.title || '',
+            title: state.quizCategory.title || '',
         },
         enableReinitialize: true,
         validateOnMount: true,
         initialErrors: {
-            firstname: 'Titlr is required'
+            title: 'Title is required'
         },
         validate: (values) => {
             const errors = {};
@@ -51,7 +49,7 @@ const UpdateQuizCategory = () => {
 
         try {
             // Perform the API PUT call using Axios
-            const response = await axios.put(`${base_url}/quiz/category/update/${quizCategoryResult._id}`, values, { headers });
+            const response = await axios.put(`${base_url}/quiz/category/update/${state.quizCategory._id}`, values, { headers });
             if (response.status === 200) {
                 if (response.data && response.data.code) {
                     if (response.data.code === 404) {

@@ -14,6 +14,8 @@ import ShowQuizCategoryDetails from './pages/show_quiz_category_details';
 import QuizList from './pages/quiz_list';
 import AddQuiz from './pages/add_quiz';
 import ShowQuizDetails from './pages/show_quiz_details';
+import UpdateQuiz from './pages/update_quiz';
+import QuestionList from './pages/question_list';
 
 function App() {
   return (
@@ -22,17 +24,21 @@ function App() {
         <Route path='/' element={<Login />} />
         <Route path='/admin' element={<MainLayout />} >
           <Route index element={<AdminList />} />
-          <Route path='user' element={<UserList />} />
+          <Route path='users' element={<UserList />} />
           <Route path='add-user' element={<AddUser />} />
           <Route path='show-user-details' element={<ShowUserDetails />} />
           <Route path='update-user-details' element={<UpdateUserDetails />} />
-          <Route path='quiz-category' element={<QuizCategoryList />} />
+          <Route path='quiz-categories' element={<QuizCategoryList />} />
           <Route path='add-quiz-category' element={<AddQuizCategory />} />
           <Route path='update-quiz-category' element={<UpdateQuizCategory />} />
           <Route path='show-quiz-category-details' element={<ShowQuizCategoryDetails />} />
-          <Route path='quiz' element={<QuizList />} />
+          <Route path='quizzes' element={<QuizList />} />
           <Route path='add-quiz' element={<AddQuiz />} />
           <Route path='show-quiz-details' element={<ShowQuizDetails />} />
+          <Route path='update-quiz' element={<UpdateQuiz />} />
+          <Route path='questions' element={<QuestionList />} />
+          {/*<Route path='add-question' element={<AddQuestion />} />
+          <Route path='show-question-details' element={<ShowQuestionDetails />} />*/}
         </Route>
       </Routes>
     </Router>

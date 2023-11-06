@@ -53,10 +53,10 @@ const MainLayout = () => {
     };
 
     const navigationOptions = [
-        { route_to: "/admin", label: "Admin" },
-        { route_to: "/admin/user", label: "User" },
-        { route_to: "/admin/quiz-category", label: "Quiz Categories" },
-        { route_to: "/admin/quiz", label: "Quiz" },
+        { route_to: "/admin", label: "Admins" },
+        { route_to: "/admin/users", label: "Users" },
+        { route_to: "/admin/quiz-categories", label: "Quiz Categories" },
+        { route_to: "/admin/quizzes", label: "Quizzes" }
     ];
 
     const activeComponent = location.pathname;
