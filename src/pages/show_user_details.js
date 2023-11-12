@@ -3,13 +3,13 @@ import axios from "axios";
 import { base_url } from "../utils/base_url";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { useLocation, useNavigate } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import DeleteModal from "../components/delete_modal";
 
 
 const ShowUserDetails = () => {
 
-    const { state } = useLocation();
+    const { id } = useParams();
     const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
     const [userResult, setUserResult] = useState({});
@@ -22,7 +22,7 @@ const ShowUserDetails = () => {
     }, []);
 
     const openEditUser = (user) => {
-        navigate("/admin/update-user-details", { state: { "user": user } });
+        navigate(`/admin/update-user-details/${user._id}`);
     };
 
     const handleDeleteClick = (user) => {
@@ -52,7 +52,7 @@ const ShowUserDetails = () => {
 
         try {
             // Perform the API GET call using Axios
-            const response = await axios.get(`${base_url}/user/${state.user._id}`, { headers });
+            const response = await axios.get(`${base_url}/user/${id}`, { headers });
             if (response.status === 200) {
                 if (response.data && response.data.code) {
                 }

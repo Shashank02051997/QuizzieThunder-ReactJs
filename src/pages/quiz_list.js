@@ -45,11 +45,11 @@ const QuizList = () => {
     };
 
     const openQuizPreview = (quiz) => {
-        navigate("/admin/show-quiz-details", { state: { "quiz": quiz } });
+        navigate(`/admin/show-quiz-details/${quiz._id}`);
     };
 
     const openEditQuiz = (quiz) => {
-        navigate("/admin/update-quiz", { state: { "quiz": quiz } });
+        navigate(`/admin/update-quiz/${quiz._id}`);
     };
 
     const handleDeleteClick = (quiz) => {

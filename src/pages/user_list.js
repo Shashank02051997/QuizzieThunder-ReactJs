@@ -46,11 +46,11 @@ const UserList = () => {
     };
 
     const openUserPreview = (user) => {
-        navigate("/admin/show-user-details", { state: { "user": user } });
+        navigate(`/admin/show-user-details/${user._id}`);
     };
 
     const openEditUser = (user) => {
-        navigate("/admin/update-user-details", { state: { "user": user } });
+        navigate(`/admin/update-user-details/${user._id}`);
     };
 
     const handleDeleteClick = (user) => {

@@ -42,7 +42,7 @@ const AdminList = () => {
     };
 
     const openUserPreview = (admin) => {
-        navigate("/admin/show-user-details", { state: { "user": admin } });
+        navigate(`/admin/show-user-details/${admin._id}`);
     };
 
     const getAdminList = async (data) => {

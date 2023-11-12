@@ -3,13 +3,13 @@ import axios from "axios";
 import { base_url } from "../utils/base_url";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { Link, useNavigate, useLocation } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import HeaderWithLink from "../components/header_with_link";
 import Loader from "../components/loader";
 import DeleteModal from "../components/delete_modal";
 
 const QuestionList = () => {
-    const { state } = useLocation();
+    const { id } = useParams();
     const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
     const [questionListResult, setQuestionListResult] = useState({});
@@ -44,11 +44,11 @@ const QuestionList = () => {
     };
 
     const openQuestionPreview = (question) => {
-        navigate("/admin/show-question-details", { state: { "question": question } });
+        navigate(`/admin/show-question-details/${question._id}`);
     };
 
     const openEditQuestion = (question) => {
-        navigate("/admin/update-question", { state: { "question": question } });
+        navigate(`/admin/update-question/${question._id}`);
     };
 
     const getQuestionList = async (data) => {
@@ -61,7 +61,7 @@ const QuestionList = () => {
 
         try {
             // Perform the API GET call using Axios
-            const response = await axios.get(`${base_url}/question/${state.quiz._id}/questions`, { headers });
+            const response = await axios.get(`${base_url}/question/${id}/questions`, { headers });
             if (response.status === 200) {
                 if (response.data && response.data.code === 200) {
                     setQuestionListResult(response.data);

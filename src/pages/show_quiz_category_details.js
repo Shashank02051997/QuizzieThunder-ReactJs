@@ -3,13 +3,13 @@ import axios from "axios";
 import { base_url } from "../utils/base_url";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { useLocation, useNavigate } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import DeleteModal from "../components/delete_modal";
 
 
 const ShowQuizCategoryDetails = () => {
 
-    const { state } = useLocation();
+    const { id } = useParams();
     const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
     const [quizCategoryResult, setQuizCategoryResult] = useState({});
@@ -22,7 +22,7 @@ const ShowQuizCategoryDetails = () => {
     }, []);
 
     const openEditQuizCategory = (quizCategory) => {
-        navigate("/admin/update-quiz-category", { state: { "quizCategory": quizCategory } });
+        navigate(`/admin/update-quiz-category/${quizCategory._id}`);
     };
 
     const handleDeleteClick = (quizCategory) => {
@@ -45,7 +45,7 @@ const ShowQuizCategoryDetails = () => {
 
         try {
             // Perform the API GET call using Axios
-            const response = await axios.get(`${base_url}/quiz/category/${state.quizCategory._id}`, { headers });
+            const response = await axios.get(`${base_url}/quiz/category/${id}`, { headers });
             if (response.status === 200) {
                 if (response.data && response.data.code) {
                 }

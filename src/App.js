@@ -16,6 +16,8 @@ import AddQuiz from './pages/add_quiz';
 import ShowQuizDetails from './pages/show_quiz_details';
 import UpdateQuiz from './pages/update_quiz';
 import QuestionList from './pages/question_list';
+import AddQuestion from './pages/add_question';
+import ShowQuestionDetails from './pages/show_question_details';
 
 function App() {
   return (
@@ -26,19 +28,20 @@ function App() {
           <Route index element={<AdminList />} />
           <Route path='users' element={<UserList />} />
           <Route path='add-user' element={<AddUser />} />
-          <Route path='show-user-details' element={<ShowUserDetails />} />
-          <Route path='update-user-details' element={<UpdateUserDetails />} />
+          <Route path='show-user-details/:id' element={<ShowUserDetails />} />
+          <Route path='update-user-details/:id' element={<UpdateUserDetails />} />
           <Route path='quiz-categories' element={<QuizCategoryList />} />
           <Route path='add-quiz-category' element={<AddQuizCategory />} />
-          <Route path='update-quiz-category' element={<UpdateQuizCategory />} />
-          <Route path='show-quiz-category-details' element={<ShowQuizCategoryDetails />} />
+          <Route path='update-quiz-category/:id' element={<UpdateQuizCategory />} />
+          <Route path='show-quiz-category-details/:id' element={<ShowQuizCategoryDetails />} />
           <Route path='quizzes' element={<QuizList />} />
           <Route path='add-quiz' element={<AddQuiz />} />
-          <Route path='show-quiz-details' element={<ShowQuizDetails />} />
-          <Route path='update-quiz' element={<UpdateQuiz />} />
-          <Route path='questions' element={<QuestionList />} />
-          {/*<Route path='add-question' element={<AddQuestion />} />
-          <Route path='show-question-details' element={<ShowQuestionDetails />} />*/}
+          <Route path='show-quiz-details/:id' element={<ShowQuizDetails />} />
+          <Route path='update-quiz/:id' element={<UpdateQuiz />} />
+          <Route path='questions/:id' element={<QuestionList />} />
+          <Route path='add-question' element={<AddQuestion />} />
+          <Route path='show-question-details/:id' element={<ShowQuestionDetails />} />
+          {/*<Route path='update-question/:id' element={<UpdateQuestion />} />*/}
         </Route>
       </Routes>
     </Router>

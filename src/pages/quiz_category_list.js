@@ -53,11 +53,11 @@ const QuizCategoryList = () => {
     };
 
     const openQuizCategoryPreview = (quizCategory) => {
-        navigate("/admin/show-quiz-category-details", { state: { "quizCategory": quizCategory } });
+        navigate(`/admin/show-quiz-category-details/${quizCategory._id}`);
     };
 
     const openEditQuizCategory = (quizCategory) => {
-        navigate("/admin/update-quiz-category", { state: { "quizCategory": quizCategory } });
+        navigate(`/admin/update-quiz-category/${quizCategory._id}`);
     };
 
     const handleDeleteClick = (quizCategory) => {

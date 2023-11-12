@@ -7,34 +7,31 @@ import { useParams, useNavigate } from "react-router-dom";
 import DeleteModal from "../components/delete_modal";
 
 
-const ShowQuizDetails = () => {
+const ShowQuestionDetails = () => {
 
     const { id } = useParams();
     const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
-    const [quizResult, setQuizResult] = useState({});
-    const [deletingQuiz, setDeletingQuiz] = useState(null);
+    const [questionResult, setQuestionResult] = useState({});
+    const [deletingQuestion, setDeletingQuestion] = useState(null);
+    const options = ["A", "B", "C", "D"];
 
     useEffect(() => {
         const loginResult = JSON.parse(localStorage.getItem('login_result'));
         console.log("Login Result:", loginResult);
-        getQuizDetail(loginResult)
+        getQuestionDetail(loginResult)
     }, []);
 
-    const openEditQuiz = (quiz) => {
-        navigate(`/admin/update-quiz/${quiz._id}`);
+    const openEditQuestion = (question) => {
+        navigate("/admin/update-question", { state: { "question": question } });
     };
 
-    const openQuestionList = (quiz) => {
-        navigate(`/admin/questions/${quiz._id}`);
-    };
-
-    const handleDeleteClick = (quiz) => {
-        setDeletingQuiz(quiz);
+    const handleDeleteClick = (question) => {
+        setDeletingQuestion(question);
     };
 
     const handleCloseModal = () => {
-        setDeletingQuiz(null)
+        setDeletingQuestion(null)
     };
 
     const confirmDelete = async () => {
@@ -46,7 +43,7 @@ const ShowQuizDetails = () => {
         setLoading(true);*/
     };
 
-    const getQuizDetail = async (data) => {
+    const getQuestionDetail = async (data) => {
         const token = data.token;
         const headers = {
             Authorization: `Bearer ${token}`,
@@ -56,12 +53,10 @@ const ShowQuizDetails = () => {
 
         try {
             // Perform the API GET call using Axios
-            const response = await axios.get(`${base_url}/quiz/${id}`, { headers });
+            const response = await axios.get(`${base_url}/question/${id}`, { headers });
             if (response.status === 200) {
-                if (response.data && response.data.code) {
-                }
                 if (response.data && response.data.code === 200) {
-                    setQuizResult(response.data.quiz);
+                    setQuestionResult(response.data.question);
                     toast.success("Quiz Detail Fetched successfully");
                 } else {
                     toast.error(response.data.message);
@@ -88,35 +83,46 @@ const ShowQuizDetails = () => {
 
                             <div className="w-full flex flex-row mb-1">
                                 <div className="w-full flex flex-col">
-                                    <h2 className="mb-2 font-semibold leading-none text-gray-900">Quiz Id</h2>
-                                    <button type="button" onClick={() => openQuestionList(quizResult)} className="mb-4 font-medium text-gray-600 flex flex-row space-x-2 items-center hover:text-primary-700">{quizResult._id}</button>
+                                    <h2 className="mb-2 font-semibold leading-none text-gray-900">Question Id</h2>
+                                    <p className="mb-4 font-medium text-gray-600 flex flex-row space-x-2 items-cente">{questionResult._id}</p>
                                 </div>
                                 <div className="w-full flex flex-col">
-                                    <h2 className="mb-2 font-semibold leading-none text-gray-900">Quiz Category</h2>
-                                    <p className="mb-4 font-medium text-gray-600 flex flex-row space-x-2 items-center">{quizResult.category ? quizResult.category.title : "No Category Assigned"}</p>
-                                </div>
-                            </div>
-
-                            <div className="w-full flex flex-row mb-1">
-                                <div className="w-full flex flex-col">
-                                    <h2 className="mb-2 font-semibold leading-none text-gray-900">Quiz Title</h2>
-                                    <button type="button" onClick={() => openQuestionList(quizResult)} className="mb-4 font-medium text-gray-600 flex flex-row space-x-2 items-center hover:text-primary-700">{quizResult.title}</button>
+                                    <h2 className="mb-2 font-semibold leading-none text-gray-900">Quiz Name</h2>
+                                    <p className="mb-4 font-medium text-gray-600 flex flex-row space-x-2 items-center">{questionResult.quiz ? questionResult.quiz.title : ""}</p>
                                 </div>
                             </div>
 
                             <div className="w-full flex flex-row mb-1">
                                 <div className="w-full flex flex-col">
-                                    <h2 className="mb-2 font-semibold leading-none text-gray-900">Quiz Description</h2>
-                                    <p className="mb-4 font-medium text-gray-600 flex flex-row space-x-2 items-center">{quizResult.description ? quizResult.description : '--'}</p>
+                                    <h2 className="mb-2 font-semibold leading-none text-gray-900">Question</h2>
+                                    <p className="mb-4 font-medium text-gray-600 flex flex-row space-x-2 items-cente">{questionResult.question}</p>
+                                </div>
+                            </div>
+
+                            <div className="w-full flex flex-row mb-1">
+                                <div className="w-full flex flex-col">
+                                    <h2 className="mb-2 font-semibold leading-none text-gray-900">Options</h2>
+                                    <ol start="1" className="mb-4 font-medium text-gray-600 space-y-4">
+                                        {questionResult.options && questionResult.options.map((option, index) => (
+                                            <li key={index}>{options[index]}. {option}</li>
+                                        ))}
+                                    </ol>
+                                </div>
+                            </div>
+
+                            <div className="w-full flex flex-row mb-1">
+                                <div className="w-full flex flex-col">
+                                    <h2 className="mb-2 font-semibold leading-none text-gray-900">Correct Answer</h2>
+                                    <p className="mb-4 font-medium text-gray-600 flex flex-row space-x-2 items-center">{options[questionResult.correctOptionIndex]}</p>
                                 </div>
                             </div>
 
                             <div className="flex flex-row space-x-4 mt-8">
-                                <button onClick={() => openEditQuiz(quizResult)} type="button" className="text-white inline-flex items-center bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">
+                                <button onClick={() => openEditQuestion(questionResult)} type="button" className="text-white inline-flex items-center bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">
                                     <svg aria-hidden="true" className="mr-1 -ml-1 w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z"></path><path fill-rule="evenodd" d="M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" clip-rule="evenodd"></path></svg>
                                     Edit
                                 </button>
-                                <button onClick={() => handleDeleteClick(quizResult)} type="button" className="inline-flex items-center text-white bg-red-600 hover:bg-red-700 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">
+                                <button onClick={() => handleDeleteClick(questionResult)} type="button" className="inline-flex items-center text-white bg-red-600 hover:bg-red-700 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">
                                     <svg aria-hidden="true" className="w-5 h-5 mr-1.5 -ml-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"></path></svg>
                                     Delete
                                 </button>
@@ -127,7 +133,7 @@ const ShowQuizDetails = () => {
                 {/*<!-- End block -->*/}
 
                 {/*<!-- Delete modal -->*/}
-                <DeleteModal isOpen={deletingQuiz} onCancel={handleCloseModal}
+                <DeleteModal isOpen={deletingQuestion} onCancel={handleCloseModal}
                     onConfirm={confirmDelete} />
 
                 {/*<!-- Toast -->*/}
@@ -138,4 +144,4 @@ const ShowQuizDetails = () => {
     );
 }
 
-export default ShowQuizDetails;
+export default ShowQuestionDetails;

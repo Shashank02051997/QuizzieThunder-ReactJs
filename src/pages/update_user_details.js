@@ -4,10 +4,10 @@ import axios from "axios";
 import { base_url } from "../utils/base_url";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { Link, useLocation } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 
 const UpdateUserDetails = () => {
-    const { state } = useLocation();
+    const { id } = useParams();
     const [loginResult, setLoginResult] = useState(null);
     const [loading, setLoading] = useState(false);
     const [userResult, setUserResult] = useState({});
@@ -16,8 +16,13 @@ const UpdateUserDetails = () => {
         const storedLoginResult = JSON.parse(localStorage.getItem('login_result'));
         console.log("Login Result:", storedLoginResult);
         setLoginResult(storedLoginResult);
-        setUserResult(state.user);
     }, []);
+
+    useEffect(() => {
+        if (loginResult !== null) {
+            getUserDetail(loginResult);
+        }
+    }, [loginResult]);
 
     const formik = useFormik({
         initialValues: {
@@ -75,6 +80,39 @@ const UpdateUserDetails = () => {
         },
     });
 
+    const getUserDetail = async (data) => {
+        const token = data.token;
+        const headers = {
+            Authorization: `Bearer ${token}`,
+        };
+
+        setLoading(true);
+
+        try {
+            // Perform the API GET call using Axios
+            const response = await axios.get(`${base_url}/user/${id}`, { headers });
+            if (response.status === 200) {
+                if (response.data && response.data.code) {
+                }
+                if (response.data && response.data.code === 200) {
+                    setUserResult(response.data.user); // Set the userResult state with the data
+                    toast.success("User Detail Fetched successfully");
+                } else {
+                    toast.error(response.data.message);
+                }
+            } else {
+                // Handle errors, e.g., display an error message
+                console.error("Error:", response.data);
+            }
+        } catch (error) {
+            // Handle network errors
+            console.error("Network Error:", error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+
     const handleSubmit = async (values) => {
         const token = loginResult.token;
         const headers = {
@@ -85,7 +123,7 @@ const UpdateUserDetails = () => {
 
         try {
             // Perform the API PUT call using Axios
-            const response = await axios.put(`${base_url}/user/update/${userResult._id}`, values, { headers });
+            const response = await axios.put(`${base_url}/user/update/${id}`, values, { headers });
             if (response.status === 200) {
                 if (response.data && response.data.code) {
                     if (response.data.code === 404) {

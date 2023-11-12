@@ -4,13 +4,14 @@ import axios from "axios";
 import { base_url } from "../utils/base_url";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { useLocation } from "react-router-dom";
+import { useParams } from "react-router-dom";
 
 const UpdateQuiz = () => {
-    const { state } = useLocation();
+    const { id } = useParams();
     const [loginResult, setLoginResult] = useState(null);
     const [loading, setLoading] = useState(false);
     const [quizCategoryListResult, setQuizCategoryListResult] = useState([]);
+    const [quizResult, setQuizResult] = useState({});
 
     useEffect(() => {
         const storedLoginResult = JSON.parse(localStorage.getItem('login_result'));
@@ -18,6 +19,45 @@ const UpdateQuiz = () => {
         setLoginResult(storedLoginResult);
         getQuizCategoryList(storedLoginResult);
     }, []);
+
+    useEffect(() => {
+        if (loginResult !== null) {
+            getQuizDetail(loginResult);
+        }
+    }, [loginResult]);
+
+    const getQuizDetail = async (data) => {
+        const token = data.token;
+        const headers = {
+            Authorization: `Bearer ${token}`,
+        };
+
+        setLoading(true);
+
+        try {
+            // Perform the API GET call using Axios
+            const response = await axios.get(`${base_url}/quiz/${id}`, { headers });
+            if (response.status === 200) {
+                if (response.data && response.data.code) {
+                }
+                if (response.data && response.data.code === 200) {
+                    setQuizResult(response.data.quiz);
+                    toast.success("Quiz Detail Fetched successfully");
+                } else {
+                    toast.error(response.data.message);
+                }
+            } else {
+                // Handle errors, e.g., display an error message
+                console.error("Error:", response.data);
+            }
+        } catch (error) {
+            // Handle network errors
+            console.error("Network Error:", error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
 
     const getQuizCategoryList = async (data) => {
         const token = data.token;
@@ -51,9 +91,9 @@ const UpdateQuiz = () => {
 
     const formik = useFormik({
         initialValues: {
-            title: state.quiz.title || '',
-            description: state.quiz.description || '',
-            quiz_category: (state.quiz.category && state.quiz.category._id) || '',
+            title: quizResult.title || '',
+            description: quizResult.description || '',
+            quiz_category: (quizResult.category && quizResult.category._id) || '',
         },
         enableReinitialize: true,
         validateOnMount: true,
@@ -96,7 +136,7 @@ const UpdateQuiz = () => {
 
         try {
             // Perform the API PUT call using Axios
-            const response = await axios.put(`${base_url}/quiz/update/${state.quiz._id}`, values, { headers });
+            const response = await axios.put(`${base_url}/quiz/update/${id}`, values, { headers });
             if (response.status === 200) {
                 if (response.data && response.data.code) {
                     if (response.data.code === 404) {
