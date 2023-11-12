@@ -23,7 +23,7 @@ const ShowQuestionDetails = () => {
     }, []);
 
     const openEditQuestion = (question) => {
-        navigate("/admin/update-question", { state: { "question": question } });
+        navigate(`/admin/update-question/${question._id}`);
     };
 
     const handleDeleteClick = (question) => {

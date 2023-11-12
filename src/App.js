@@ -18,6 +18,7 @@ import UpdateQuiz from './pages/update_quiz';
 import QuestionList from './pages/question_list';
 import AddQuestion from './pages/add_question';
 import ShowQuestionDetails from './pages/show_question_details';
+import UpdateQuestion from './pages/update_question';
 
 function App() {
   return (
@@ -41,7 +42,7 @@ function App() {
           <Route path='questions/:id' element={<QuestionList />} />
           <Route path='add-question' element={<AddQuestion />} />
           <Route path='show-question-details/:id' element={<ShowQuestionDetails />} />
-          {/*<Route path='update-question/:id' element={<UpdateQuestion />} />*/}
+          <Route path='update-question/:id' element={<UpdateQuestion />} />
         </Route>
       </Routes>
     </Router>
