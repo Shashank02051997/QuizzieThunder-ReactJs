@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useFormik } from 'formik';
 import axios from "axios";
-import { base_url } from "../utils/base_url";
+import { base_url, optionList } from "../utils/constants";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useParams } from "react-router-dom";
@@ -12,7 +12,6 @@ const UpdateQuestion = () => {
     const [loading, setLoading] = useState(false);
     const [questionResult, setQuestionResult] = useState({});
     const [quizListResult, setQuizListResult] = useState([]);
-    const optionList = [{ "id": 0, name: "A" }, { "id": 1, name: "B" }, { "id": 2, name: "C" }, { "id": 3, name: "D" }];
 
     useEffect(() => {
         const storedLoginResult = JSON.parse(localStorage.getItem('login_result'));
@@ -41,7 +40,6 @@ const UpdateQuestion = () => {
             if (response.status === 200) {
                 if (response.data && response.data.code === 200) {
                     setQuizListResult(response.data.quizzes);
-                    toast.success("List Fetched successfully");
                 } else {
                     toast.error(response.data.message);
                 }
@@ -71,7 +69,6 @@ const UpdateQuestion = () => {
             if (response.status === 200) {
                 if (response.data && response.data.code === 200) {
                     setQuestionResult(response.data.question);
-                    toast.success("Quiz Detail Fetched successfully");
                 } else {
                     toast.error(response.data.message);
                 }
@@ -155,7 +152,6 @@ const UpdateQuestion = () => {
                         toast.error(response.data.message);
                     } else {
                         toast.success(response.data.message);
-                        formik.resetForm();
                     }
                 }
             } else {
@@ -189,7 +185,7 @@ const UpdateQuestion = () => {
 
                                 <div className="w-full">
                                     <label htmlFor="quiz" className="block mb-2 text-sm font-medium text-gray-900">
-                                        Quiz Category
+                                        Quiz
                                     </label>
                                     <select
                                         name="quiz"
@@ -253,7 +249,6 @@ const UpdateQuestion = () => {
                                         className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                                         onChange={formik.handleChange}
                                         value={formik.values.correct_option}>
-                                        <option value="" disabled>Select a option</option>
                                         {optionList.map((data) => (
                                             <option key={data.id} value={data.id}>
                                                 {data.name}

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useFormik } from 'formik';
 import axios from "axios";
-import { base_url } from "../utils/base_url";
+import { base_url } from "../utils/constants";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useParams } from "react-router-dom";
@@ -58,11 +58,8 @@ const UpdateQuizCategory = () => {
             // Perform the API GET call using Axios
             const response = await axios.get(`${base_url}/quiz/category/${id}`, { headers });
             if (response.status === 200) {
-                if (response.data && response.data.code) {
-                }
                 if (response.data && response.data.code === 200) {
                     setQuizCategoryResult(response.data.quizCategory);
-                    toast.success("Quiz Category Detail Fetched successfully");
                 } else {
                     toast.error(response.data.message);
                 }

@@ -1,24 +1,24 @@
 import './App.css';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Login from './pages/login';
-import MainLayout from './components/main_layout';
-import AdminList from './pages/admin_list';
-import UserList from './pages/user_list';
-import AddUser from './pages/add_user';
-import ShowUserDetails from './pages/show_user_details';
-import UpdateUserDetails from './pages/update_user_details';
-import QuizCategoryList from './pages/quiz_category_list';
-import AddQuizCategory from './pages/add_quiz_category';
-import UpdateQuizCategory from './pages/update_quiz_category';
-import ShowQuizCategoryDetails from './pages/show_quiz_category_details';
-import QuizList from './pages/quiz_list';
-import AddQuiz from './pages/add_quiz';
-import ShowQuizDetails from './pages/show_quiz_details';
-import UpdateQuiz from './pages/update_quiz';
-import QuestionList from './pages/question_list';
-import AddQuestion from './pages/add_question';
-import ShowQuestionDetails from './pages/show_question_details';
-import UpdateQuestion from './pages/update_question';
+import Login from '../pages/login';
+import MainLayout from '../components/main_layout';
+import AdminList from '../pages/admin_list';
+import UserList from '../pages/user_list';
+import AddUser from '../pages/add_user';
+import ShowUserDetails from '../pages/show_user_details';
+import UpdateUserDetails from '../pages/update_user_details';
+import QuizCategoryList from '../pages/quiz_category_list';
+import AddQuizCategory from '../pages/add_quiz_category';
+import UpdateQuizCategory from '../pages/update_quiz_category';
+import ShowQuizCategoryDetails from '../pages/show_quiz_category_details';
+import QuizList from '../pages/quiz_list';
+import AddQuiz from '../pages/add_quiz';
+import ShowQuizDetails from '../pages/show_quiz_details';
+import UpdateQuiz from '../pages/update_quiz';
+import QuestionList from '../pages/question_list';
+import AddQuestion from '../pages/add_question';
+import ShowQuestionDetails from '../pages/show_question_details';
+import UpdateQuestion from '../pages/update_question';
 
 function App() {
   return (
@@ -40,7 +40,7 @@ function App() {
           <Route path='show-quiz-details/:id' element={<ShowQuizDetails />} />
           <Route path='update-quiz/:id' element={<UpdateQuiz />} />
           <Route path='questions/:id' element={<QuestionList />} />
-          <Route path='add-question' element={<AddQuestion />} />
+          <Route path='add-question/:id' element={<AddQuestion />} />
           <Route path='show-question-details/:id' element={<ShowQuestionDetails />} />
           <Route path='update-question/:id' element={<UpdateQuestion />} />
         </Route>

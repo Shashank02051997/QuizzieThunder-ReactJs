@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useFormik } from 'formik';
 import axios from "axios";
-import { base_url } from "../utils/base_url";
+import { base_url } from "../utils/constants";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useParams } from "react-router-dom";
@@ -38,11 +38,8 @@ const UpdateQuiz = () => {
             // Perform the API GET call using Axios
             const response = await axios.get(`${base_url}/quiz/${id}`, { headers });
             if (response.status === 200) {
-                if (response.data && response.data.code) {
-                }
                 if (response.data && response.data.code === 200) {
                     setQuizResult(response.data.quiz);
-                    toast.success("Quiz Detail Fetched successfully");
                 } else {
                     toast.error(response.data.message);
                 }
@@ -73,7 +70,6 @@ const UpdateQuiz = () => {
             if (response.status === 200) {
                 if (response.data && response.data.code === 200) {
                     setQuizCategoryListResult(response.data.quiz_categories);
-                    toast.success("List Fetched successfully");
                 } else {
                     toast.error(response.data.message);
                 }

@@ -1,24 +1,24 @@
 import React, { useState, useEffect } from "react";
 import { useFormik } from 'formik';
 import axios from "axios";
-import { base_url } from "../utils/base_url";
+import { base_url, optionList } from "../utils/constants";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { useParams } from "react-router-dom";
 
 const AddQuestion = () => {
+    const { id } = useParams();
     const [loginResult, setLoginResult] = useState(null);
     const [loading, setLoading] = useState(false);
     const [quizListResult, setQuizListResult] = useState([]);
-    const optionList = [{ "id": 0, name: "A" }, { "id": 1, name: "B" }, { "id": 2, name: "C" }, { "id": 3, name: "D" }];
+    const [quizResult, setQuizResult] = useState({});
 
     useEffect(() => {
         const storedLoginResult = JSON.parse(localStorage.getItem('login_result'));
         console.log("Login Result:", storedLoginResult);
         setLoginResult(storedLoginResult);
         getQuizList(storedLoginResult);
-
     }, [])
-
 
     const getQuizList = async (data) => {
         const token = data.token;
@@ -34,7 +34,36 @@ const AddQuestion = () => {
             if (response.status === 200) {
                 if (response.data && response.data.code === 200) {
                     setQuizListResult(response.data.quizzes);
-                    toast.success("List Fetched successfully");
+                    getQuizDetail(data);
+                } else {
+                    toast.error(response.data.message);
+                }
+            } else {
+                // Handle errors, e.g., display an error message
+                console.error("Error:", response.data);
+            }
+        } catch (error) {
+            // Handle network errors
+            console.error("Network Error:", error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const getQuizDetail = async (data) => {
+        const token = data.token;
+        const headers = {
+            Authorization: `Bearer ${token}`,
+        };
+
+        setLoading(true);
+
+        try {
+            // Perform the API GET call using Axios
+            const response = await axios.get(`${base_url}/quiz/${id}`, { headers });
+            if (response.status === 200) {
+                if (response.data && response.data.code === 200) {
+                    setQuizResult(response.data.quiz);
                 } else {
                     toast.error(response.data.message);
                 }
@@ -51,7 +80,7 @@ const AddQuestion = () => {
     };
 
     const formik = useFormik({
-        initialValues: { question: '', quiz: '', option_a: '', option_b: '', option_c: '', option_d: '', correct_option: '' },
+        initialValues: { question: '', quiz: quizResult._id || '', option_a: '', option_b: '', option_c: '', option_d: '', correct_option: '' },
         initialErrors: {
             question: 'Question is required',
             quiz: 'Quiz is required',
@@ -153,7 +182,7 @@ const AddQuestion = () => {
 
                                 <div className="w-full">
                                     <label htmlFor="quiz" className="block mb-2 text-sm font-medium text-gray-900">
-                                        Quiz Category
+                                        Quiz
                                     </label>
                                     <select
                                         name="quiz"

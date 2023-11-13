@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { base_url } from "../utils/base_url";
+import { base_url } from "../utils/constants";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useParams, useNavigate } from "react-router-dom";
@@ -54,8 +54,6 @@ const ShowUserDetails = () => {
             // Perform the API GET call using Axios
             const response = await axios.get(`${base_url}/user/${id}`, { headers });
             if (response.status === 200) {
-                if (response.data && response.data.code) {
-                }
                 if (response.data && response.data.code === 200) {
                     setUserResult(response.data.user); // Set the userResult state with the data
                     toast.success("User Detail Fetched successfully");

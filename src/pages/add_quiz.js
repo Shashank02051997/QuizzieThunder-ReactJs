@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useFormik } from 'formik';
 import axios from "axios";
-import { base_url } from "../utils/base_url";
+import { base_url } from "../utils/constants";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -31,7 +31,6 @@ const AddQuiz = () => {
             if (response.status === 200) {
                 if (response.data && response.data.code === 200) {
                     setQuizCategoryListResult(response.data.quiz_categories);
-                    toast.success("List Fetched successfully");
                 } else {
                     toast.error(response.data.message);
                 }
