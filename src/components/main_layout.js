@@ -49,7 +49,7 @@ const MainLayout = () => {
     };
 
     const openUserPreview = () => {
-        navigate("/admin/show-user-details", { state: { "user": loginResult } });
+        navigate(`/admin/show-user-details/${loginResult._id}`);
     };
 
     const navigationOptions = [

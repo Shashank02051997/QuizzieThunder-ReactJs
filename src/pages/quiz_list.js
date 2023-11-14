@@ -118,7 +118,7 @@ const QuizList = () => {
                                                 <th scope="col" className="px-4 py-3">Id</th>
                                                 <th scope="col" className="px-4 py-3">Title</th>
                                                 <th scope="col" className="px-4 py-3">Description</th>
-                                                <th scope="col" className="px-4 py-3">Quiz Category</th>
+                                                <th scope="col" className="px-4 py-3">Question Count</th>
                                                 <th scope="col" className="px-4 py-3">
                                                     <span className="sr-only">Actions</span>
                                                 </th>
@@ -130,7 +130,11 @@ const QuizList = () => {
                                                     <th type="button" onClick={() => openQuizPreview(quiz)} className="px-4 py-3 font-medium text-gray-900 whitespace-nowrap max-w-[10rem] truncate hover:text-primary-700">{quiz._id}</th>
                                                     <td className="px-4 py-3 max-w-[15rem] truncate">{quiz.title}</td>
                                                     <td className="px-4 py-3 max-w-[20rem] truncate">{quiz.description}</td>
-                                                    <td className="px-4 py-3 max-w-[10rem] truncate">{quiz.category ? quiz.category.title : "No Category Assigned"}</td>
+                                                    <td className="px-4 py-3 text-center flex items-center justify-center">
+                                                        <span className="bg-primary-700 rounded-full text-white font-bold h-8 w-8 flex items-center justify-center">
+                                                            {quiz.questionCount}
+                                                        </span>
+                                                    </td>
                                                     <td className="px-4 py-3 relative">
                                                         <button onClick={() => toggleRowDropdown(quiz._id)} id={`apple-imac-27-dropdown-button-${quiz._id}`} className="inline-flex items-center text-sm font-medium hover:bg-gray-100 text-center text-gray-500 hover:text-gray-800 rounded-lg focus:outline-none " type="button">
                                                             <svg className="w-5 h-5" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
