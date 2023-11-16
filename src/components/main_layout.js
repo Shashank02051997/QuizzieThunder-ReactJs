@@ -159,7 +159,7 @@ const MainLayout = () => {
 
             </aside>
 
-            <main className="p-4 md:ml-64 h-auto">
+            <main className="ml-64 h-auto">
                 {loginResult ? (<Outlet />) : null}
             </main>
         </div>

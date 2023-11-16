@@ -104,7 +104,7 @@ const UserList = () => {
         <>
             <div>
                 {/*<!-- Start block -->*/}
-                <section className="bg-gray-50 p-3 sm:p-5 antialiased mt-10">
+                <section className="bg-gray-50 antialiased mt-10">
 
                     <HeaderWithLink title={"User List"} linkTo={"/admin/add-user"} />
                     <Loader isShow={loading} />

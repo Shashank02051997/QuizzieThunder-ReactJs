@@ -78,7 +78,7 @@ const AdminList = () => {
         <>
             <div>
                 {/*<!-- Start block -->*/}
-                <section className="bg-gray-50 p-3 antialiased mt-10">
+                <section className="bg-gray-50 antialiased mt-10">
                     <HeaderWithLink title={"Admin List"} />
                     <Loader isShow={loading} />
                     {!loading ? (

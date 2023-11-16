@@ -3,8 +3,8 @@ import { Link } from 'react-router-dom';
 
 const HeaderWithLink = ({ title, linkTo }) => {
     return (
-        <div className="flex flex-row md:flex-row items-center justify-between space-y-3 md:space-y-0 md:space-x-4 p-4">
-            <h1 className="text-3xl font-medium">{title}</h1>
+        <div className="flex flex-row items-center justify-between space-y-3 p-4">
+            <h1 className="text-2xl font-medium">{title}</h1>
             {linkTo ? (<Link
                 to={linkTo}
                 type="button"

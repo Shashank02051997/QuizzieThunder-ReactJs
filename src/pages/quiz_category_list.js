@@ -135,7 +135,7 @@ const QuizCategoryList = () => {
         <>
             <div>
                 {/*<!-- Start block -->*/}
-                <section className="bg-gray-50 p-3 antialiased mt-10">
+                <section className="bg-gray-50 antialiased mt-10">
                     <HeaderWithLink title={"Quiz Categories"} linkTo={"/admin/add-quiz-category"} />
                     <Loader isShow={loading} />
                     {!loading ? (

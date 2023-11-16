@@ -3,8 +3,7 @@ import axios from "axios";
 import { base_url } from "../utils/constants";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { useNavigate, useParams } from "react-router-dom";
-import HeaderWithLink from "../components/header_with_link";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import Loader from "../components/loader";
 import DeleteModal from "../components/delete_modal";
 
@@ -41,6 +40,10 @@ const QuestionList = () => {
 
     const closeRowDropDown = () => {
         //setActiveRowDropdown(null);
+    };
+
+    const backToPreviousPage = () => {
+        navigate(-1);
     };
 
     const openQuestionPreview = (question) => {
@@ -85,9 +88,21 @@ const QuestionList = () => {
         <>
             <div>
                 {/*<!-- Start block -->*/}
-                <section className="bg-gray-50 p-3 sm:p-5 antialiased mt-10">
+                <section className="bg-gray-50  antialiased mt-10">
 
-                    <HeaderWithLink title={questionListResult.quiz ? `${questionListResult.quiz.title} Question List` : ""} Question List linkTo={`/admin/add-question/${questionListResult.quiz && questionListResult.quiz._id}`} />
+                    <div className="flex flex-row items-center justify-between space-y-3 p-4">
+                        <h1 className="text-2xl font-medium"><span className="text-primary-700" onClick={() => backToPreviousPage()} type="button">{questionListResult.quiz ? questionListResult.quiz.title : ""}</span>
+                            {questionListResult.quiz && questionListResult.quiz.title ? (<span className="inline-block">
+                                <i className="fa fa-chevron-right text-lg ml-2 mr-2"></i>Questions
+                            </span>) : null}
+                        </h1>
+                        <Link
+                            to={`/admin/add-question/${questionListResult.quiz && questionListResult.quiz._id}`}
+                            type="button"
+                            className="flex items-center justify-center text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-sm px-4 py-2 focus:outline-none">
+                            Create New
+                        </Link>
+                    </div>
                     <Loader isShow={loading} />
 
                     {!loading ? (

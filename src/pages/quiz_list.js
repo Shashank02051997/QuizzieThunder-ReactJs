@@ -103,7 +103,7 @@ const QuizList = () => {
         <>
             <div>
                 {/*<!-- Start block -->*/}
-                <section className="bg-gray-50 p-3 sm:p-5 antialiased mt-10">
+                <section className="bg-gray-50 antialiased mt-10">
                     <HeaderWithLink title={"Quiz List"} linkTo={"/admin/add-quiz"} />
                     <Loader isShow={loading} />
                     {!loading ? (
