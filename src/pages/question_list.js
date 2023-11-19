@@ -1,11 +1,10 @@
 import React, { useState, useEffect, useRef } from "react";
-import axios from "axios";
-import { base_url } from "../utils/constants";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Link, useNavigate, useParams } from "react-router-dom";
 import Loader from "../components/loader";
 import DeleteModal from "../components/delete_modal";
+import { getAllQuestions } from "../network/question_api";
 
 const QuestionList = () => {
     const { id } = useParams();
@@ -17,9 +16,7 @@ const QuestionList = () => {
     const rowDropdownRef = useRef(null);
 
     useEffect(() => {
-        const loginResult = JSON.parse(localStorage.getItem('login_result'));
-        console.log("Login Result:", loginResult);
-        getQuestionList(loginResult)
+        getQuestionList()
 
         // Add event listener to the document to close the dropdown on outside click
         function handleClickOutside(event) {
@@ -54,31 +51,16 @@ const QuestionList = () => {
         navigate(`/admin/update-question/${question._id}`);
     };
 
-    const getQuestionList = async (data) => {
-        const token = data.token;
-        const headers = {
-            Authorization: `Bearer ${token}`,
-        };
+    const getQuestionList = async () => {
 
         setLoading(true);
 
         try {
-            // Perform the API GET call using Axios
-            const response = await axios.get(`${base_url}/question/${id}/questions`, { headers });
-            if (response.status === 200) {
-                if (response.data && response.data.code === 200) {
-                    setQuestionListResult(response.data);
-                    toast.success("List Fetched successfully");
-                } else {
-                    toast.error(response.data.message);
-                }
-            } else {
-                // Handle errors, e.g., display an error message
-                console.error("Error:", response.data);
-            }
+            const response = await getAllQuestions(id);
+            setQuestionListResult(response);
+            toast.success("List Fetched successfully");
         } catch (error) {
-            // Handle network errors
-            console.error("Network Error:", error);
+            toast.error(error.message);
         } finally {
             setLoading(false);
         }
@@ -96,12 +78,16 @@ const QuestionList = () => {
                                 <i className="fa fa-chevron-right text-lg ml-2 mr-2"></i>Questions
                             </span>) : null}
                         </h1>
-                        <Link
-                            to={`/admin/add-question/${questionListResult.quiz && questionListResult.quiz._id}`}
-                            type="button"
-                            className="flex items-center justify-center text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-sm px-4 py-2 focus:outline-none">
-                            Create New
-                        </Link>
+                        <div className="flex flex-row items-center">
+                            <h3 className="mr-8 text-lg font-medium">Total : {questionListResult.questions && questionListResult.questions.length}</h3>
+                            <Link
+                                to={`/admin/add-question/${questionListResult.quiz && questionListResult.quiz._id}`}
+                                type="button"
+                                className="flex items-center justify-center text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-sm px-4 py-2 focus:outline-none">
+                                Create New
+                            </Link>
+
+                        </div>
                     </div>
                     <Loader isShow={loading} />
 

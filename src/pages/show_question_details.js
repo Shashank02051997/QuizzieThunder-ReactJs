@@ -1,14 +1,12 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
-import { base_url } from "../utils/constants";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useParams, useNavigate } from "react-router-dom";
 import DeleteModal from "../components/delete_modal";
+import { getQuestionDetailData } from "../network/question_api";
 
 
 const ShowQuestionDetails = () => {
-
     const { id } = useParams();
     const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
@@ -17,9 +15,7 @@ const ShowQuestionDetails = () => {
     const options = ["A", "B", "C", "D"];
 
     useEffect(() => {
-        const loginResult = JSON.parse(localStorage.getItem('login_result'));
-        console.log("Login Result:", loginResult);
-        getQuestionDetail(loginResult)
+        getQuestionDetail()
     }, []);
 
     const openEditQuestion = (question) => {
@@ -43,31 +39,17 @@ const ShowQuestionDetails = () => {
         setLoading(true);*/
     };
 
-    const getQuestionDetail = async (data) => {
-        const token = data.token;
-        const headers = {
-            Authorization: `Bearer ${token}`,
-        };
+    const getQuestionDetail = async () => {
 
         setLoading(true);
 
         try {
-            // Perform the API GET call using Axios
-            const response = await axios.get(`${base_url}/question/${id}`, { headers });
-            if (response.status === 200) {
-                if (response.data && response.data.code === 200) {
-                    setQuestionResult(response.data.question);
-                    toast.success("Quiz Detail Fetched successfully");
-                } else {
-                    toast.error(response.data.message);
-                }
-            } else {
-                // Handle errors, e.g., display an error message
-                console.error("Error:", response.data);
-            }
+
+            const response = await getQuestionDetailData(id);
+            setQuestionResult(response.data.question);
+            toast.success("Quiz Detail Fetched successfully");
         } catch (error) {
-            // Handle network errors
-            console.error("Network Error:", error);
+            toast.error(error.message);
         } finally {
             setLoading(false);
         }

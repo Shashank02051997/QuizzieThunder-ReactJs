@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { useFormik } from 'formik';
-import axios from "axios";
-import { base_url } from "../utils/constants";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate } from "react-router-dom";
+import { loginData } from "../network/admin_api";
 
 
 const Login = () => {
@@ -52,27 +51,14 @@ const Login = () => {
         setLoading(true);
 
         try {
-            // Perform the API POST call using Axios
-            const response = await axios.post(`${base_url}/user/admin-login`, values);
-            if (response.status === 200) {
-                if (response.data && response.data.code) {
-                    if (response.data.code === 404) {
-                        toast.error(response.data.message);
-                    } else {
-                        const loginResult = response.data.result;
-                        toast.success(response.data.message);
-                        formik.resetForm();
-                        localStorage.setItem("login_result", JSON.stringify(loginResult));
-                        navigate("/admin");
-                    }
-                }
-            } else {
-                // Handle errors, e.g., display an error message
-                console.error("Error:", response.data);
-            }
+            const response = await loginData(values);
+            const loginResult = response.result;
+            toast.success(response.message);
+            formik.resetForm();
+            localStorage.setItem("login_result", JSON.stringify(loginResult));
+            navigate("/admin");
         } catch (error) {
-            // Handle network errors
-            console.error("Network Error:", error);
+            toast.error(error.message);
         } finally {
             setLoading(false);
         }

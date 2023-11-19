@@ -1,19 +1,12 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useFormik } from 'formik';
-import axios from "axios";
-import { base_url } from "../utils/constants";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { registerUser } from "../network/user_api";
 
 const AddUser = () => {
-    useEffect(() => {
-        const storedLoginResult = JSON.parse(localStorage.getItem('login_result'));
-        console.log("Login Result:", storedLoginResult);
-        setLoginResult(storedLoginResult);
 
-    }, [])
-
-    const [loginResult, setLoginResult] = useState(null);
+    const baseUrl = process.env.REACT_APP_BASE_URL;
     const [loading, setLoading] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
 
@@ -62,32 +55,14 @@ const AddUser = () => {
 
     const handleSubmit = async (values) => {
         console.log('onSubmit', values);
-        const token = loginResult.token;
-        const headers = {
-            Authorization: `Bearer ${token}`,
-        };
-
         setLoading(true);
 
         try {
-            // Perform the API POST call using Axios
-            const response = await axios.post(`${base_url}/user/register`, values, { headers });
-            if (response.status === 200) {
-                if (response.data && response.data.code) {
-                    if (response.data.code === 404) {
-                        toast.error(response.data.message);
-                    } else {
-                        toast.success(response.data.message);
-                        formik.resetForm();
-                    }
-                }
-            } else {
-                // Handle errors, e.g., display an error message
-                console.error("Error:", response.data);
-            }
+            const response = await registerUser(values);
+            toast.success(response.message);
+            formik.resetForm();
         } catch (error) {
-            // Handle network errors
-            console.error("Network Error:", error);
+            toast.error(error.message);
         } finally {
             setLoading(false);
         }

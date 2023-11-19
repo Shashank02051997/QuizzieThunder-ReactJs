@@ -1,28 +1,19 @@
 import React, { useState, useEffect } from "react";
 import { useFormik } from 'formik';
-import axios from "axios";
-import { base_url } from "../utils/constants";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Link, useParams } from "react-router-dom";
+import { getUserDetailData, updateUserDetailData } from "../network/user_api";
 
 const UpdateUserDetails = () => {
     const { id } = useParams();
-    const [loginResult, setLoginResult] = useState(null);
     const [loading, setLoading] = useState(false);
     const [userResult, setUserResult] = useState({});
 
     useEffect(() => {
-        const storedLoginResult = JSON.parse(localStorage.getItem('login_result'));
-        console.log("Login Result:", storedLoginResult);
-        setLoginResult(storedLoginResult);
+        getUserDetail();
     }, []);
 
-    useEffect(() => {
-        if (loginResult !== null) {
-            getUserDetail(loginResult);
-        }
-    }, [loginResult]);
 
     const formik = useFormik({
         initialValues: {
@@ -80,31 +71,17 @@ const UpdateUserDetails = () => {
         },
     });
 
-    const getUserDetail = async (data) => {
-        const token = data.token;
-        const headers = {
-            Authorization: `Bearer ${token}`,
-        };
+    const getUserDetail = async () => {
 
         setLoading(true);
 
         try {
-            // Perform the API GET call using Axios
-            const response = await axios.get(`${base_url}/user/${id}`, { headers });
-            if (response.status === 200) {
-                if (response.data && response.data.code === 200) {
-                    setUserResult(response.data.user); // Set the userResult state with the data
-                    toast.success("User Detail Fetched successfully");
-                } else {
-                    toast.error(response.data.message);
-                }
-            } else {
-                // Handle errors, e.g., display an error message
-                console.error("Error:", response.data);
-            }
+
+            const response = await getUserDetailData(id);
+            setUserResult(response.user); // Set the userResult state with the data
+            toast.success("User Detail Fetched successfully");
         } catch (error) {
-            // Handle network errors
-            console.error("Network Error:", error);
+            toast.error(error.message);
         } finally {
             setLoading(false);
         }
@@ -112,33 +89,14 @@ const UpdateUserDetails = () => {
 
 
     const handleSubmit = async (values) => {
-        const token = loginResult.token;
-        const headers = {
-            Authorization: `Bearer ${token}`,
-        };
 
         setLoading(true);
 
         try {
-            // Perform the API PUT call using Axios
-            const response = await axios.put(`${base_url}/user/update/${id}`, values, { headers });
-            if (response.status === 200) {
-                if (response.data && response.data.code) {
-                    if (response.data.code === 404) {
-                        toast.error(response.data.message);
-                    } else {
-                        const result = response.data.result;
-                        console.log(result);
-                        toast.success(response.data.message);
-                    }
-                }
-            } else {
-                // Handle errors, e.g., display an error message
-                console.error("Error:", response.data);
-            }
+            const response = await updateUserDetailData(id, values);
+            toast.success(response.message);
         } catch (error) {
-            // Handle network errors
-            console.error("Network Error:", error);
+            toast.error(error.message);
         } finally {
             setLoading(false);
         }

@@ -1,14 +1,12 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
-import { base_url } from "../utils/constants";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useParams, useNavigate } from "react-router-dom";
 import DeleteModal from "../components/delete_modal";
+import { getQuizCategoryDetailData } from "../network/quiz_category_api";
 
 
 const ShowQuizCategoryDetails = () => {
-
     const { id } = useParams();
     const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
@@ -16,9 +14,7 @@ const ShowQuizCategoryDetails = () => {
     const [deletingQuizCategory, setDeletingQuizCategory] = useState(null);
 
     useEffect(() => {
-        const loginResult = JSON.parse(localStorage.getItem('login_result'));
-        console.log("Login Result:", loginResult);
-        getQuizCategoryDetail(loginResult)
+        getQuizCategoryDetail()
     }, []);
 
     const openEditQuizCategory = (quizCategory) => {
@@ -35,31 +31,15 @@ const ShowQuizCategoryDetails = () => {
 
     const confirmDelete = async () => {
     };
-    const getQuizCategoryDetail = async (data) => {
-        const token = data.token;
-        const headers = {
-            Authorization: `Bearer ${token}`,
-        };
-
+    const getQuizCategoryDetail = async () => {
         setLoading(true);
 
         try {
-            // Perform the API GET call using Axios
-            const response = await axios.get(`${base_url}/quiz/category/${id}`, { headers });
-            if (response.status === 200) {
-                if (response.data && response.data.code === 200) {
-                    setQuizCategoryResult(response.data.quizCategory);
-                    toast.success("Quiz Category Detail Fetched successfully");
-                } else {
-                    toast.error(response.data.message);
-                }
-            } else {
-                // Handle errors, e.g., display an error message
-                console.error("Error:", response.data);
-            }
+            const response = await getQuizCategoryDetailData(id);
+            setQuizCategoryResult(response.quizCategory);
+            toast.success("Quiz Category Detail Fetched successfully");
         } catch (error) {
-            // Handle network errors
-            console.error("Network Error:", error);
+            toast.error(error.message);
         } finally {
             setLoading(false);
         }

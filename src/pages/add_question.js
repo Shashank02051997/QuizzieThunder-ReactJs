@@ -1,79 +1,44 @@
 import React, { useState, useEffect } from "react";
 import { useFormik } from 'formik';
-import axios from "axios";
-import { base_url, optionList } from "../utils/constants";
+import { optionList } from "../utils/constants";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useParams } from "react-router-dom";
+import { createQuestionData, getAllQuizData, getQuizDetailData } from "../network/question_api";
 
 const AddQuestion = () => {
     const { id } = useParams();
-    const [loginResult, setLoginResult] = useState(null);
     const [loading, setLoading] = useState(false);
     const [quizListResult, setQuizListResult] = useState([]);
     const [quizResult, setQuizResult] = useState({});
 
     useEffect(() => {
-        const storedLoginResult = JSON.parse(localStorage.getItem('login_result'));
-        console.log("Login Result:", storedLoginResult);
-        setLoginResult(storedLoginResult);
-        getQuizList(storedLoginResult);
+        getQuizList();
     }, [])
 
-    const getQuizList = async (data) => {
-        const token = data.token;
-        const headers = {
-            Authorization: `Bearer ${token}`,
-        };
+    const getQuizList = async () => {
 
         setLoading(true);
 
         try {
-            // Perform the API GET call using Axios
-            const response = await axios.get(`${base_url}/quiz/all-quiz`, { headers });
-            if (response.status === 200) {
-                if (response.data && response.data.code === 200) {
-                    setQuizListResult(response.data.quizzes);
-                    getQuizDetail(data);
-                } else {
-                    toast.error(response.data.message);
-                }
-            } else {
-                // Handle errors, e.g., display an error message
-                console.error("Error:", response.data);
-            }
+            const response = await getAllQuizData();
+            setQuizListResult(response.quizzes);
+            await getQuizDetail();
         } catch (error) {
-            // Handle network errors
-            console.error("Network Error:", error);
+            toast.error(error.message);
         } finally {
             setLoading(false);
         }
     };
 
-    const getQuizDetail = async (data) => {
-        const token = data.token;
-        const headers = {
-            Authorization: `Bearer ${token}`,
-        };
-
+    const getQuizDetail = async () => {
         setLoading(true);
 
         try {
-            // Perform the API GET call using Axios
-            const response = await axios.get(`${base_url}/quiz/${id}`, { headers });
-            if (response.status === 200) {
-                if (response.data && response.data.code === 200) {
-                    setQuizResult(response.data.quiz);
-                } else {
-                    toast.error(response.data.message);
-                }
-            } else {
-                // Handle errors, e.g., display an error message
-                console.error("Error:", response.data);
-            }
+            const response = await getQuizDetailData(id);
+            setQuizResult(response.quiz);
         } catch (error) {
-            // Handle network errors
-            console.error("Network Error:", error);
+            toast.error(error.message);
         } finally {
             setLoading(false);
         }
@@ -132,32 +97,14 @@ const AddQuestion = () => {
 
     const handleSubmit = async (values) => {
         console.log('onSubmit', values);
-        const token = loginResult.token;
-        const headers = {
-            Authorization: `Bearer ${token}`,
-        };
-
         setLoading(true);
 
         try {
-            // Perform the API POST call using Axios
-            const response = await axios.post(`${base_url}/question/create`, values, { headers });
-            if (response.status === 200) {
-                if (response.data && response.data.code) {
-                    if (response.data.code === 404) {
-                        toast.error(response.data.message);
-                    } else {
-                        toast.success(response.data.message);
-                        formik.resetForm();
-                    }
-                }
-            } else {
-                // Handle errors, e.g., display an error message
-                console.error("Error:", response.data);
-            }
+            const response = await createQuestionData(values);
+            toast.success(response.message);
+            formik.resetForm();
         } catch (error) {
-            // Handle network errors
-            console.error("Network Error:", error);
+            toast.error(error.message);
         } finally {
             setLoading(false);
         }

@@ -1,17 +1,16 @@
 import React, { useState, useEffect, useRef } from "react";
-import axios from "axios";
-import { base_url } from "../utils/constants";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate } from "react-router-dom";
 import HeaderWithLink from "../components/header_with_link";
 import Loader from "../components/loader";
 import DeleteModal from "../components/delete_modal";
+import { getAllUsersData } from "../network/user_api";
 
 const UserList = () => {
-
     const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
+    const [totalCount, setTotalCount] = useState(0);
     const [userListResult, setUserListResult] = useState([]);
     const [activeRowDropdown, setActiveRowDropdown] = useState(null);
     const [deletingUser, setDeletingUser] = useState(null);
@@ -20,9 +19,7 @@ const UserList = () => {
     const rowDropdownRef = useRef(null);
 
     useEffect(() => {
-        const loginResult = JSON.parse(localStorage.getItem('login_result'));
-        console.log("Login Result:", loginResult);
-        getUserList(loginResult)
+        getUserList()
 
         // Add event listener to the document to close the dropdown on outside click
         function handleClickOutside(event) {
@@ -70,31 +67,18 @@ const UserList = () => {
         setLoading(true);*/
     };
 
-    const getUserList = async (data) => {
-        const token = data.token;
-        const headers = {
-            Authorization: `Bearer ${token}`,
-        };
+    const getUserList = async () => {
 
         setLoading(true);
 
         try {
-            // Perform the API GET call using Axios
-            const response = await axios.get(`${base_url}/user/all-users`, { headers });
-            if (response.status === 200) {
-                if (response.data && response.data.code === 200) {
-                    setUserListResult(response.data.users); // Set the userListResult state with the data
-                    toast.success("List Fetched successfully");
-                } else {
-                    toast.error(response.data.message);
-                }
-            } else {
-                // Handle errors, e.g., display an error message
-                console.error("Error:", response.data);
-            }
+
+            const response = await getAllUsersData();
+            setTotalCount(response.count);
+            setUserListResult(response.users); // Set the userListResult state with the data
+            toast.success("List Fetched successfully");
         } catch (error) {
-            // Handle network errors
-            console.error("Network Error:", error);
+            toast.error(error.message);
         } finally {
             setLoading(false);
         }
@@ -106,7 +90,7 @@ const UserList = () => {
                 {/*<!-- Start block -->*/}
                 <section className="bg-gray-50 antialiased mt-10">
 
-                    <HeaderWithLink title={"User List"} linkTo={"/admin/add-user"} />
+                    <HeaderWithLink title={"User List"} total={totalCount} linkTo={"/admin/add-user"} />
                     <Loader isShow={loading} />
                     {!loading ? (
                         <div className="mx-auto max-w-screen-xl px-4">

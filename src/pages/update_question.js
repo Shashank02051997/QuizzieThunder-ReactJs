@@ -1,84 +1,45 @@
 import React, { useState, useEffect } from "react";
 import { useFormik } from 'formik';
-import axios from "axios";
-import { base_url, optionList } from "../utils/constants";
+import { optionList } from "../utils/constants";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useParams } from "react-router-dom";
+import { getAllQuizData, getQuestionDetailData, updateQuestionData } from "../network/question_api";
 
 const UpdateQuestion = () => {
     const { id } = useParams();
-    const [loginResult, setLoginResult] = useState(null);
     const [loading, setLoading] = useState(false);
     const [questionResult, setQuestionResult] = useState({});
     const [quizListResult, setQuizListResult] = useState([]);
 
     useEffect(() => {
-        const storedLoginResult = JSON.parse(localStorage.getItem('login_result'));
-        console.log("Login Result:", storedLoginResult);
-        setLoginResult(storedLoginResult);
-        getQuizList(storedLoginResult);
+        getQuizList();
     }, [])
 
-    useEffect(() => {
-        if (loginResult !== null) {
-            getQuestionDetail(loginResult);
-        }
-    }, [loginResult]);
 
-    const getQuizList = async (data) => {
-        const token = data.token;
-        const headers = {
-            Authorization: `Bearer ${token}`,
-        };
-
+    const getQuizList = async () => {
         setLoading(true);
 
         try {
-            // Perform the API GET call using Axios
-            const response = await axios.get(`${base_url}/quiz/all-quiz`, { headers });
-            if (response.status === 200) {
-                if (response.data && response.data.code === 200) {
-                    setQuizListResult(response.data.quizzes);
-                } else {
-                    toast.error(response.data.message);
-                }
-            } else {
-                // Handle errors, e.g., display an error message
-                console.error("Error:", response.data);
-            }
+            const response = await getAllQuizData();
+            setQuizListResult(response.quizzes);
+            await getQuestionDetail();
         } catch (error) {
-            // Handle network errors
-            console.error("Network Error:", error);
+            toast.error(error.message);
         } finally {
             setLoading(false);
         }
     };
 
-    const getQuestionDetail = async (data) => {
-        const token = data.token;
-        const headers = {
-            Authorization: `Bearer ${token}`,
-        };
+    const getQuestionDetail = async () => {
 
         setLoading(true);
 
         try {
-            // Perform the API GET call using Axios
-            const response = await axios.get(`${base_url}/question/${id}`, { headers });
-            if (response.status === 200) {
-                if (response.data && response.data.code === 200) {
-                    setQuestionResult(response.data.question);
-                } else {
-                    toast.error(response.data.message);
-                }
-            } else {
-                // Handle errors, e.g., display an error message
-                console.error("Error:", response.data);
-            }
+            const response = await getQuestionDetailData(id);
+            setQuestionResult(response.question);
         } catch (error) {
-            // Handle network errors
-            console.error("Network Error:", error);
+            toast.error(error.message);
         } finally {
             setLoading(false);
         }
@@ -136,31 +97,14 @@ const UpdateQuestion = () => {
 
     const handleSubmit = async (values) => {
         console.log('onSubmit', values);
-        const token = loginResult.token;
-        const headers = {
-            Authorization: `Bearer ${token}`,
-        };
 
         setLoading(true);
 
         try {
-            // Perform the API PUT call using Axios
-            const response = await axios.put(`${base_url}/question/update/${id}`, values, { headers });
-            if (response.status === 200) {
-                if (response.data && response.data.code) {
-                    if (response.data.code === 404) {
-                        toast.error(response.data.message);
-                    } else {
-                        toast.success(response.data.message);
-                    }
-                }
-            } else {
-                // Handle errors, e.g., display an error message
-                console.error("Error:", response.data);
-            }
+            const response = await updateQuestionData(id, values);
+            toast.success(response.message);
         } catch (error) {
-            // Handle network errors
-            console.error("Network Error:", error);
+            toast.error(error.message);
         } finally {
             setLoading(false);
         }

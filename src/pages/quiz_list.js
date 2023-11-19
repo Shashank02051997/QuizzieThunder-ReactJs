@@ -1,17 +1,16 @@
 import React, { useState, useEffect, useRef } from "react";
-import axios from "axios";
-import { base_url } from "../utils/constants";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate } from "react-router-dom";
 import HeaderWithLink from "../components/header_with_link";
 import Loader from "../components/loader";
 import DeleteModal from "../components/delete_modal";
+import { getAllQuizData } from "../network/quiz_api";
 
 const QuizList = () => {
-
     const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
+    const [totalCount, setTotalCount] = useState(0);
     const [quizListResult, setQuizListResult] = useState([]);
     const [activeRowDropdown, setActiveRowDropdown] = useState(null);
     const [deletingQuiz, setDeletingQuiz] = useState(null);
@@ -19,9 +18,7 @@ const QuizList = () => {
     const rowDropdownRef = useRef(null);
 
     useEffect(() => {
-        const loginResult = JSON.parse(localStorage.getItem('login_result'));
-        console.log("Login Result:", loginResult);
-        getQuizList(loginResult)
+        getQuizList()
 
         // Add event listener to the document to close the dropdown on outside click
         function handleClickOutside(event) {
@@ -69,31 +66,17 @@ const QuizList = () => {
         setLoading(true);*/
     };
 
-    const getQuizList = async (data) => {
-        const token = data.token;
-        const headers = {
-            Authorization: `Bearer ${token}`,
-        };
-
+    const getQuizList = async () => {
         setLoading(true);
 
         try {
-            // Perform the API GET call using Axios
-            const response = await axios.get(`${base_url}/quiz/all-quiz`, { headers });
-            if (response.status === 200) {
-                if (response.data && response.data.code === 200) {
-                    setQuizListResult(response.data.quizzes); // Set the QuizListResult state with the data
-                    toast.success("List Fetched successfully");
-                } else {
-                    toast.error(response.data.message);
-                }
-            } else {
-                // Handle errors, e.g., display an error message
-                console.error("Error:", response.data);
-            }
+
+            const response = await getAllQuizData();
+            setTotalCount(response.count);
+            setQuizListResult(response.quizzes); // Set the QuizListResult state with the data
+            toast.success("List Fetched successfully");
         } catch (error) {
-            // Handle network errors
-            console.error("Network Error:", error);
+            toast.error(error.message);
         } finally {
             setLoading(false);
         }
@@ -104,7 +87,7 @@ const QuizList = () => {
             <div>
                 {/*<!-- Start block -->*/}
                 <section className="bg-gray-50 antialiased mt-10">
-                    <HeaderWithLink title={"Quiz List"} linkTo={"/admin/add-quiz"} />
+                    <HeaderWithLink title={"Quiz List"} total={totalCount} linkTo={"/admin/add-quiz"} />
                     <Loader isShow={loading} />
                     {!loading ? (
                         <div className="mx-auto max-w-screen-xl px-4">

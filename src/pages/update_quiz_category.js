@@ -1,28 +1,18 @@
 import React, { useState, useEffect } from "react";
 import { useFormik } from 'formik';
-import axios from "axios";
-import { base_url } from "../utils/constants";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useParams } from "react-router-dom";
+import { getQuizCategoryDetailData, updateQuizCategoryData } from "../network/quiz_category_api";
 
 const UpdateQuizCategory = () => {
     const { id } = useParams();
-    const [loginResult, setLoginResult] = useState(null);
     const [loading, setLoading] = useState(false);
     const [quizCategoryResult, setQuizCategoryResult] = useState({});
 
     useEffect(() => {
-        const storedLoginResult = JSON.parse(localStorage.getItem('login_result'));
-        console.log("Login Result:", storedLoginResult);
-        setLoginResult(storedLoginResult);
+        getQuizCategoryDetail();
     }, []);
-
-    useEffect(() => {
-        if (loginResult !== null) {
-            getQuizCategoryDetail(loginResult);
-        }
-    }, [loginResult]);
 
     const formik = useFormik({
         initialValues: {
@@ -46,63 +36,32 @@ const UpdateQuizCategory = () => {
         },
     });
 
-    const getQuizCategoryDetail = async (data) => {
-        const token = data.token;
-        const headers = {
-            Authorization: `Bearer ${token}`,
-        };
+    const getQuizCategoryDetail = async () => {
 
         setLoading(true);
 
         try {
-            // Perform the API GET call using Axios
-            const response = await axios.get(`${base_url}/quiz/category/${id}`, { headers });
-            if (response.status === 200) {
-                if (response.data && response.data.code === 200) {
-                    setQuizCategoryResult(response.data.quizCategory);
-                } else {
-                    toast.error(response.data.message);
-                }
-            } else {
-                // Handle errors, e.g., display an error message
-                console.error("Error:", response.data);
-            }
+            const response = await getQuizCategoryDetailData(id);
+            setQuizCategoryResult(response.data.quizCategory);
         } catch (error) {
-            // Handle network errors
-            console.error("Network Error:", error);
+            toast.error(error.message);
         } finally {
             setLoading(false);
         }
     };
 
     const handleSubmit = async (values) => {
-        const token = loginResult.token;
-        const headers = {
-            Authorization: `Bearer ${token}`,
-        };
 
         setLoading(true);
 
         try {
-            // Perform the API PUT call using Axios
-            const response = await axios.put(`${base_url}/quiz/category/update/${id}`, values, { headers });
-            if (response.status === 200) {
-                if (response.data && response.data.code) {
-                    if (response.data.code === 404) {
-                        toast.error(response.data.message);
-                    } else {
-                        const result = response.data.result;
-                        console.log(result);
-                        toast.success(response.data.message);
-                    }
-                }
-            } else {
-                // Handle errors, e.g., display an error message
-                console.error("Error:", response.data);
-            }
+
+            const response = await updateQuizCategoryData(id, values);
+            const result = response.result;
+            console.log(result);
+            toast.success(response.message);
         } catch (error) {
-            // Handle network errors
-            console.error("Network Error:", error);
+            toast.error(error.message);
         } finally {
             setLoading(false);
         }

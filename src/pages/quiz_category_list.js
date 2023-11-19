@@ -1,18 +1,16 @@
 import React, { useState, useEffect, useRef } from "react";
-import axios from "axios";
-import { base_url } from "../utils/constants";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate } from "react-router-dom";
 import DeleteModal from "../components/delete_modal";
 import Loader from "../components/loader";
 import HeaderWithLink from "../components/header_with_link";
+import { deleteQuizCategoryData, getAllQuizCategories } from "../network/quiz_category_api";
 
 const QuizCategoryList = () => {
-
     const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
-    const [loginResult, setLoginResult] = useState(null);
+    const [totalCount, setTotalCount] = useState(0);
     const [quizCategoryListResult, setQuizCategoryListResult] = useState([]);
     const [activeRowDropdown, setActiveRowDropdown] = useState(null);
     const [deletingQuizCategory, setDeletingQuizCategory] = useState(null);
@@ -21,10 +19,6 @@ const QuizCategoryList = () => {
     const rowDropdownRef = useRef(null);
 
     useEffect(() => {
-        const storedLoginResult = JSON.parse(localStorage.getItem('login_result'));
-        console.log("Login Result:", storedLoginResult);
-        setLoginResult(storedLoginResult);
-
         // Add event listener to the document to close the dropdown on outside click
         function handleClickOutside(event) {
             if (rowDropdownRef.current && !rowDropdownRef.current.contains(event.target)) {
@@ -39,10 +33,8 @@ const QuizCategoryList = () => {
     }, []);
 
     useEffect(() => {
-        if (loginResult !== null) {
-            getQuizCategoryList();
-        }
-    }, [loginResult]);
+        getQuizCategoryList();
+    }, []);
 
     const toggleRowDropdown = (rowId) => {
         setActiveRowDropdown(rowId === activeRowDropdown ? null : rowId);
@@ -69,32 +61,16 @@ const QuizCategoryList = () => {
     };
 
     const confirmDelete = async () => {
-        const token = loginResult.token;
-        const headers = {
-            Authorization: `Bearer ${token}`,
-        };
-
         setLoading(true);
         try {
-            // Perform the API DELETE call using Axios
-            const response = await axios.delete(`${base_url}/quiz/category/${deletingQuizCategory._id}`, { headers });
-            if (response.status === 200) {
-                if (response.data && response.data.code) {
-                    if (response.data.code === 404) {
-                        toast.error(response.data.message);
-                    } else {
-                        toast.success(response.data.message);
-                        setDeletingQuizCategory(null);
-                        getQuizCategoryList();
-                    }
-                }
-            } else {
-                // Handle errors, e.g., display an error message
-                console.error("Error:", response.data);
-            }
+
+            const response = deleteQuizCategoryData(deletingQuizCategory._id);
+            toast.success(response.message);
+            setDeletingQuizCategory(null);
+            getQuizCategoryList();
+
         } catch (error) {
-            // Handle network errors
-            console.error("Network Error:", error);
+            toast.error(error.message);
         } finally {
             setLoading(false);
         }
@@ -102,30 +78,16 @@ const QuizCategoryList = () => {
 
 
     const getQuizCategoryList = async () => {
-        const token = loginResult.token;
-        const headers = {
-            Authorization: `Bearer ${token}`,
-        };
 
         setLoading(true);
 
         try {
-            // Perform the API GET call using Axios
-            const response = await axios.get(`${base_url}/quiz/category/all`, { headers });
-            if (response.status === 200) {
-                if (response.data && response.data.code === 200) {
-                    setQuizCategoryListResult(response.data.quiz_categories);
-                    toast.success("List Fetched successfully");
-                } else {
-                    toast.error(response.data.message);
-                }
-            } else {
-                // Handle errors, e.g., display an error message
-                console.error("Error:", response.data);
-            }
+            const response = await getAllQuizCategories();
+            setTotalCount(response.count);
+            setQuizCategoryListResult(response.quiz_categories);
+            toast.success("List Fetched successfully");
         } catch (error) {
-            // Handle network errors
-            console.error("Network Error:", error);
+            toast.error(error.message);
         } finally {
             setLoading(false);
         }
@@ -136,7 +98,7 @@ const QuizCategoryList = () => {
             <div>
                 {/*<!-- Start block -->*/}
                 <section className="bg-gray-50 antialiased mt-10">
-                    <HeaderWithLink title={"Quiz Categories"} linkTo={"/admin/add-quiz-category"} />
+                    <HeaderWithLink title={"Quiz Categories"} total={totalCount} linkTo={"/admin/add-quiz-category"} />
                     <Loader isShow={loading} />
                     {!loading ? (
                         <div className="mx-auto max-w-screen-xl px-4">
