@@ -6,6 +6,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { useParams } from "react-router-dom";
 import { getQuestionDetailData, updateQuestionData } from "../network/question_api";
 import { getAllQuizData } from "../network/quiz_api";
+import Loader from "../components/loader";
 
 const UpdateQuestion = () => {
     const { id } = useParams();
@@ -113,6 +114,10 @@ const UpdateQuestion = () => {
 
     return (
         <div>
+            {/*<!-- Loader -->*/}
+            <Loader isShow={loading} />
+
+            {/*<!-- Start block -->*/}
             <div className="bg-gray-50 h-screen">
                 <section className=" mx-auto bg-white shadow-md mt-10">
                     <div className="py-8 px-4 mx-auto">
@@ -215,6 +220,9 @@ const UpdateQuestion = () => {
                     </div>
                 </section>
             </div>
+            {/*<!-- End block -->*/}
+
+            {/*<!-- Toast -->*/}
             <ToastContainer />
         </div>
     )

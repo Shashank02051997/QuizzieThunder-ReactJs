@@ -4,6 +4,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Link, useParams } from "react-router-dom";
 import { getUserDetailData, updateUserDetailData } from "../network/user_api";
+import Loader from "../components/loader";
 
 const UpdateUserDetails = () => {
     const { id } = useParams();
@@ -104,6 +105,10 @@ const UpdateUserDetails = () => {
 
     return (
         <div>
+            {/*<!-- Loader -->*/}
+            <Loader isShow={loading} />
+
+            {/*<!-- Start block -->*/}
             <div className="bg-gray-50 h-screen">
                 <section className=" mx-auto bg-white shadow-md mt-10">
                     <div className="py-8 px-4 mx-auto">
@@ -235,6 +240,9 @@ const UpdateUserDetails = () => {
                     </div>
                 </section>
             </div>
+            {/*<!-- End block -->*/}
+
+            {/*<!-- Toast -->*/}
             <ToastContainer />
         </div>
     )

@@ -58,10 +58,13 @@ const AdminList = () => {
     return (
 
         <div>
+            {/*<!-- Loader -->*/}
+            <Loader isShow={loading} />
+
             {/*<!-- Start block -->*/}
             <section className="bg-gray-50 antialiased mt-10">
                 <HeaderWithLink title={"Admin List"} />
-                <Loader isShow={loading} />
+
                 {!loading ? (
                     <div className="mx-auto max-w-screen-xl px-4">
 
