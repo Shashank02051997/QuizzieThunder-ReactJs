@@ -2,11 +2,10 @@ import React, { useState } from "react";
 import { useFormik } from 'formik';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { registerUser } from "../network/user_api";
+import { registerUserData } from "../network/user_api";
 
 const AddUser = () => {
 
-    const baseUrl = process.env.REACT_APP_BASE_URL;
     const [loading, setLoading] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
 
@@ -58,7 +57,7 @@ const AddUser = () => {
         setLoading(true);
 
         try {
-            const response = await registerUser(values);
+            const response = await registerUserData(values);
             toast.success(response.message);
             formik.resetForm();
         } catch (error) {

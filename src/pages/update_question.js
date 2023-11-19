@@ -4,7 +4,8 @@ import { optionList } from "../utils/constants";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useParams } from "react-router-dom";
-import { getAllQuizData, getQuestionDetailData, updateQuestionData } from "../network/question_api";
+import { getQuestionDetailData, updateQuestionData } from "../network/question_api";
+import { getAllQuizData } from "../network/quiz_api";
 
 const UpdateQuestion = () => {
     const { id } = useParams();

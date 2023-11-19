@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import DeleteModal from "../components/delete_modal";
 import Loader from "../components/loader";
 import HeaderWithLink from "../components/header_with_link";
-import { deleteQuizCategoryData, getAllQuizCategories } from "../network/quiz_category_api";
+import { deleteQuizCategoryData, getAllQuizCategoriesData } from "../network/quiz_category_api";
 
 const QuizCategoryList = () => {
     const navigate = useNavigate();
@@ -63,7 +63,6 @@ const QuizCategoryList = () => {
     const confirmDelete = async () => {
         setLoading(true);
         try {
-
             const response = deleteQuizCategoryData(deletingQuizCategory._id);
             toast.success(response.message);
             setDeletingQuizCategory(null);
@@ -82,7 +81,7 @@ const QuizCategoryList = () => {
         setLoading(true);
 
         try {
-            const response = await getAllQuizCategories();
+            const response = await getAllQuizCategoriesData();
             setTotalCount(response.count);
             setQuizCategoryListResult(response.quiz_categories);
             toast.success("List Fetched successfully");

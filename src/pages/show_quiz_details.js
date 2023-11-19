@@ -48,7 +48,7 @@ const ShowQuizDetails = () => {
 
         try {
             const response = await getQuizDetailData(id);
-            setQuizResult(response.data.quiz);
+            setQuizResult(response.quiz);
             toast.success("Quiz Detail Fetched successfully");
         } catch (error) {
             toast.error(error.message);

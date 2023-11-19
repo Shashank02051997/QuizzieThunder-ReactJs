@@ -42,7 +42,7 @@ const UpdateQuizCategory = () => {
 
         try {
             const response = await getQuizCategoryDetailData(id);
-            setQuizCategoryResult(response.data.quizCategory);
+            setQuizCategoryResult(response.quizCategory);
         } catch (error) {
             toast.error(error.message);
         } finally {

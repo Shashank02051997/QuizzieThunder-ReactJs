@@ -9,7 +9,7 @@ export function deleteQuizCategoryData(id) {
 }
 
 export function getAllQuizCategoriesData() {
-    return axiosClient.delete('/quiz/category/all');
+    return axiosClient.get('/quiz/category/all');
 }
 
 export function getQuizCategoryDetailData(id) {
@@ -17,5 +17,5 @@ export function getQuizCategoryDetailData(id) {
 }
 
 export function updateQuizCategoryData(id, data) {
-    return axiosClient.get(`/quiz/category/update/${id}`, data);
+    return axiosClient.put(`/quiz/category/update/${id}`, data);
 }

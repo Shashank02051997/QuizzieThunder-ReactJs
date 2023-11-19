@@ -3,7 +3,7 @@ import { useFormik } from 'formik';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { createQuizData } from "../network/quiz_api";
-import { getAllQuizCategories } from "../network/quiz_category_api";
+import { getAllQuizCategoriesData } from "../network/quiz_category_api";
 
 const AddQuiz = () => {
     const [quizCategoryListResult, setQuizCategoryListResult] = useState([]);
@@ -19,7 +19,7 @@ const AddQuiz = () => {
 
         try {
 
-            const response = await getAllQuizCategories();
+            const response = await getAllQuizCategoriesData();
             setQuizCategoryListResult(response.quiz_categories);
 
         } catch (error) {

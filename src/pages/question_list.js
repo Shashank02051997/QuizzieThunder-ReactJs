@@ -4,7 +4,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { Link, useNavigate, useParams } from "react-router-dom";
 import Loader from "../components/loader";
 import DeleteModal from "../components/delete_modal";
-import { getAllQuestions } from "../network/question_api";
+import { getAllQuestionsData } from "../network/question_api";
 
 const QuestionList = () => {
     const { id } = useParams();
@@ -56,7 +56,7 @@ const QuestionList = () => {
         setLoading(true);
 
         try {
-            const response = await getAllQuestions(id);
+            const response = await getAllQuestionsData(id);
             setQuestionListResult(response);
             toast.success("List Fetched successfully");
         } catch (error) {
