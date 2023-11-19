@@ -67,13 +67,17 @@ const UserList = () => {
         setLoading(true);*/
     };
 
-    const getUserList = async () => {
+    const handleSearch = async (searchValue) => {
+        getUserList(searchValue);
+    }
+
+    const getUserList = async (search) => {
 
         setLoading(true);
 
         try {
 
-            const response = await getAllUsersData();
+            const response = await getAllUsersData(search);
             setTotalCount(response.count);
             setUserListResult(response.users); // Set the userListResult state with the data
             toast.success("List Fetched successfully");
@@ -84,6 +88,7 @@ const UserList = () => {
         }
     };
 
+
     return (
         <div>
             {/*<!-- Loader -->*/}
@@ -92,7 +97,7 @@ const UserList = () => {
             {/*<!-- Start block -->*/}
             <section className="bg-gray-50 antialiased mt-10">
 
-                <HeaderWithLink title={"User List"} total={totalCount} linkTo={"/admin/add-user"} />
+                <HeaderWithLink title={"User List"} total={totalCount} linkTo={"/admin/add-user"} searchPlcehoder={"Search by name, email, mobile"} onSearch={handleSearch} />
                 {!loading ? (
                     <div className="mx-auto max-w-screen-xl px-4">
 

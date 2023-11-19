@@ -4,12 +4,13 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate } from "react-router-dom";
 import { loginData } from "../network/admin_api";
+import { KEY_LOGIN_RESULT } from "../utils/constants";
 
 
 const Login = () => {
 
     useEffect(() => {
-        let loginResult = localStorage.getItem('login_result')
+        let loginResult = localStorage.getItem(KEY_LOGIN_RESULT)
         if (loginResult && loginResult !== null && loginResult.token !== null) {
             navigate("/admin");
         }
@@ -55,7 +56,7 @@ const Login = () => {
             const loginResult = response.result;
             toast.success(response.message);
             formik.resetForm();
-            localStorage.setItem("login_result", JSON.stringify(loginResult));
+            localStorage.setItem(KEY_LOGIN_RESULT, JSON.stringify(loginResult));
             navigate("/admin");
         } catch (error) {
             toast.error(error.message);

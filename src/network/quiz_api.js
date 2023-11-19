@@ -4,8 +4,8 @@ export function createQuizData(data) {
     return axiosClient.post('/quiz/create', data);
 }
 
-export function getAllQuizData() {
-    return axiosClient.get('/quiz/all-quiz');
+export function getAllQuizData(search) {
+    return axiosClient.get('/quiz/all-quiz', { params: { search: search } });
 }
 
 export function getQuizDetailData(id) {

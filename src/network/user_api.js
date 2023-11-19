@@ -12,6 +12,6 @@ export function updateUserDetailData(id, data) {
     return axiosClient.put(`/user/update/${id}`, data);
 }
 
-export function getAllUsersData() {
-    return axiosClient.get('/user/all-users');
+export function getAllUsersData(search) {
+    return axiosClient.get('/user/all-users', { params: { search: search } });
 }

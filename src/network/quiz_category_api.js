@@ -8,8 +8,8 @@ export function deleteQuizCategoryData(id) {
     return axiosClient.delete(`/quiz/category/${id}`);
 }
 
-export function getAllQuizCategoriesData() {
-    return axiosClient.get('/quiz/category/all');
+export function getAllQuizCategoriesData(search) {
+    return axiosClient.get('/quiz/category/all', { params: { search: search } });
 }
 
 export function getQuizCategoryDetailData(id) {

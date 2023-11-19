@@ -1,7 +1,8 @@
 import axios from 'axios';
+import { KEY_LOGIN_RESULT } from './constants';
 
 // Set the base URL for your API
-const baseUrl = "https://quizzie-thunder-apis.onrender.com/api"; // https://localhost:4444/api
+const baseUrl = "https://quizzie-thunder-apis.onrender.com/api"; // http://localhost:4444/api
 axios.defaults.baseURL = baseUrl;
 
 // Create an Axios instance with the base URL
@@ -10,7 +11,7 @@ const axiosClient = axios.create();
 // Add an interceptor to automatically include the authorization header
 axiosClient.interceptors.request.use(
     (config) => {
-        const storedLoginResult = JSON.parse(localStorage.getItem('login_result'));
+        const storedLoginResult = JSON.parse(localStorage.getItem(KEY_LOGIN_RESULT));
         const token = storedLoginResult ? storedLoginResult.token : null;
 
         if (token) {

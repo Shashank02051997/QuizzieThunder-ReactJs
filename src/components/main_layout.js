@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Outlet, Link, useLocation } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
+import { KEY_LOGIN_RESULT } from "../utils/constants";
 
 const MainLayout = () => {
     useEffect(() => {
-        const storedLoginResult = JSON.parse(localStorage.getItem('login_result'));
+        const storedLoginResult = JSON.parse(localStorage.getItem(KEY_LOGIN_RESULT));
         if (storedLoginResult === null) {
             navigate("/");
         }
@@ -44,7 +45,7 @@ const MainLayout = () => {
     };
 
     const signOut = () => {
-        localStorage.removeItem('login_result');
+        localStorage.removeItem(KEY_LOGIN_RESULT);
         navigate("/");
     };
 

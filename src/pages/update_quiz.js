@@ -46,8 +46,6 @@ const UpdateQuiz = () => {
         }
     };
 
-
-
     const formik = useFormik({
         initialValues: {
             title: quizResult.title || '',

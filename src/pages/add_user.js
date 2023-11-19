@@ -75,6 +75,7 @@ const AddUser = () => {
                         <h2 className="mb-4 text-xl font-bold text-gray-900">Add a new user</h2>
                         <form className="mt-10" onSubmit={formik.handleSubmit}>
                             <div className="grid gap-4 grid-cols-2 ">
+
                                 <div className="w-full">
                                     <label htmlFor="firstname" className="block mb-2 text-sm font-medium text-gray-900">First Name</label>
                                     <input type="text" name="firstname" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5" placeholder="First name" onChange={formik.handleChange}

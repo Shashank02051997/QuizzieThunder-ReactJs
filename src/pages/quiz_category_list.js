@@ -75,13 +75,16 @@ const QuizCategoryList = () => {
         }
     };
 
+    const handleSearch = async (searchValue) => {
+        getQuizCategoryList(searchValue);
+    }
 
-    const getQuizCategoryList = async () => {
+    const getQuizCategoryList = async (search) => {
 
         setLoading(true);
 
         try {
-            const response = await getAllQuizCategoriesData();
+            const response = await getAllQuizCategoriesData(search);
             setTotalCount(response.count);
             setQuizCategoryListResult(response.quiz_categories);
             toast.success("List Fetched successfully");
@@ -97,7 +100,7 @@ const QuizCategoryList = () => {
             <div>
                 {/*<!-- Start block -->*/}
                 <section className="bg-gray-50 antialiased mt-10">
-                    <HeaderWithLink title={"Quiz Categories"} total={totalCount} linkTo={"/admin/add-quiz-category"} />
+                    <HeaderWithLink title={"Quiz Categories"} total={totalCount} linkTo={"/admin/add-quiz-category"} searchPlcehoder={"Search by title"} onSearch={handleSearch} />
                     <Loader isShow={loading} />
                     {!loading ? (
                         <div className="mx-auto max-w-screen-xl px-4">
