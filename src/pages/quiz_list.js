@@ -99,7 +99,7 @@ const QuizList = () => {
 
             {/*<!-- Start block -->*/}
             <section className="bg-gray-50 antialiased mt-10">
-                <HeaderWithLink title={"Quiz List"} total={totalCount} linkTo={"/admin/add-quiz"} searchPlcehoder={"Search by title"} onSearch={handleSearch} displayFilterBtn={true} onFilter={handleFilter} />
+                <HeaderWithLink title={"Quiz List"} total={totalCount} linkTo={"/admin/add-quiz"} searchPlcehoder={"Search by title"} onSearch={handleSearch} displayFilterBtn={false} onFilter={handleFilter} />
 
                 {!loading ? (
                     <div className="mx-auto max-w-screen-xl px-4">
