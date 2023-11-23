@@ -2,7 +2,7 @@ import axios from 'axios';
 import { KEY_LOGIN_RESULT } from './constants';
 
 // Set the base URL for your API
-const baseUrl = "https://quizzie-thunder-apis.onrender.com/api"; // http://localhost:4444/api
+const baseUrl = "http://localhost:4444/api"; // https://quizzie-thunder-apis.onrender.com/api
 axios.defaults.baseURL = baseUrl;
 
 // Create an Axios instance with the base URL
