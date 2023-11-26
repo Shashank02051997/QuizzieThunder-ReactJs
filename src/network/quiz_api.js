@@ -15,3 +15,7 @@ export function getQuizDetailData(id) {
 export function updateQuizData(id, data) {
     return axiosClient.post(`/quiz/update/${id}`, data);
 }
+
+export function filterQuizListData(id) {
+    return axiosClient.get(`/quiz/${id}/quizzes`);
+}

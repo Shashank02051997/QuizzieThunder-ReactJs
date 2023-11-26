@@ -19,7 +19,6 @@ const AddQuiz = () => {
         setLoading(true);
 
         try {
-
             const response = await getAllQuizCategoriesData();
             setQuizCategoryListResult(response.quiz_categories);
 
@@ -122,7 +121,7 @@ const AddQuiz = () => {
                             </div>
                             <div className="w-full mt-4">
                                 <label htmlFor="description" className="block mb-2 text-sm font-medium text-gray-900">Description</label>
-                                <textarea name="description" id="description" rows="5" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary-500 focus:border-primary-500 " placeholder="Write a quiz description..." onChange={formik.handleChange} value={formik.values.description}></textarea>
+                                <textarea name="description" rows="5" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary-500 focus:border-primary-500 " placeholder="Write a quiz description..." onChange={formik.handleChange} value={formik.values.description}></textarea>
                             </div>
                             <div className="flex justify-center mt-4">
                                 <button type="submit" className={`inline-flex items-center px-5 py-2.5 mt-4 text-sm font-medium text-center text-white rounded-lg focus:ring-4  ${formik.isValid ? 'bg-primary-600 hover:bg-primary-700 focus:ring-primary-300' : 'bg-gray-600 hover:bg-gray-700 focus:ring-gray-300'}`}>

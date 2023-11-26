@@ -4,7 +4,7 @@ const DeleteModal = ({ title, isOpen, onCancel, onConfirm }) => {
     if (!isOpen) return null;
 
     return (
-        <div className="fixed top-0 left-0 w-full h-full z-50 bg-slate-100 bg-opacity-50">
+        <div className="fixed top-0 left-0 w-full h-full z-50 bg-black bg-opacity-50">
             <div className="flex flex-col justify-center items-center h-full">
                 <div className="relative p-4 max-w-lg max-h-full">
                     <div className="relative p-4 text-center bg-white rounded-lg shadow">

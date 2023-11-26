@@ -5,7 +5,9 @@ import { useNavigate } from "react-router-dom";
 import HeaderWithLink from "../components/header_with_link";
 import Loader from "../components/loader";
 import DeleteModal from "../components/delete_modal";
-import { getAllQuizData } from "../network/quiz_api";
+import { filterQuizListData, getAllQuizData } from "../network/quiz_api";
+import { getAllQuizCategoriesData } from "../network/quiz_category_api";
+import { useFormik } from "formik";
 
 const QuizList = () => {
     const navigate = useNavigate();
@@ -13,14 +15,15 @@ const QuizList = () => {
     const [isFilterDrawerOpen, setFilterDrawerOpen] = useState(false);
     const [totalCount, setTotalCount] = useState(0);
     const [quizListResult, setQuizListResult] = useState([]);
+    const [quizCategoryListResult, setQuizCategoryListResult] = useState([]);
     const [activeRowDropdown, setActiveRowDropdown] = useState(null);
     const [deletingQuiz, setDeletingQuiz] = useState(null);
     // Ref to store a reference to the dropdown container
     const rowDropdownRef = useRef(null);
 
     useEffect(() => {
-        getQuizList()
-
+        getQuizList();
+        getQuizCategoryList();
         // Add event listener to the document to close the dropdown on outside click
         function handleClickOutside(event) {
             if (rowDropdownRef.current && !rowDropdownRef.current.contains(event.target)) {
@@ -76,11 +79,62 @@ const QuizList = () => {
     };
 
     const getQuizList = async (search) => {
+        formik.resetForm();
+        setFilterDrawerOpen(false)
         setLoading(true);
 
         try {
-
             const response = await getAllQuizData(search);
+            setTotalCount(response.count);
+            setQuizListResult(response.quizzes); // Set the QuizListResult state with the data
+            toast.success("List Fetched successfully");
+        } catch (error) {
+            toast.error(error.message);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const getQuizCategoryList = async () => {
+
+        try {
+            const response = await getAllQuizCategoriesData();
+            setQuizCategoryListResult(response.quiz_categories);
+
+        } catch (error) {
+            toast.error(error.message);
+        } finally {
+
+        }
+    };
+
+
+    const formik = useFormik({
+        initialValues: { quiz_category: '' },
+        initialErrors: {
+            quiz_category: 'Quiz Category is required',
+        },
+        validate: (values) => {
+            const errors = {};
+            if (!values.quiz_category) {
+                errors.quiz_category = 'Quiz Category is required';
+            }
+            return errors;
+        },
+        onSubmit: (values, { setSubmitting }) => {
+            const modifiedValues = {
+                category: values.quiz_category,
+            };
+            handleSubmit(modifiedValues);
+            setSubmitting(false);
+        },
+    });
+
+    const handleSubmit = async (values) => {
+        handleFilter();
+        setLoading(true);
+        try {
+            const response = await filterQuizListData(values.category);
             setTotalCount(response.count);
             setQuizListResult(response.quizzes); // Set the QuizListResult state with the data
             toast.success("List Fetched successfully");
@@ -99,7 +153,7 @@ const QuizList = () => {
 
             {/*<!-- Start block -->*/}
             <section className="bg-gray-50 antialiased mt-10">
-                <HeaderWithLink title={"Quiz List"} total={totalCount} linkTo={"/admin/add-quiz"} searchPlcehoder={"Search by title"} onSearch={handleSearch} displayFilterBtn={false} onFilter={handleFilter} />
+                <HeaderWithLink title={"Quiz List"} total={totalCount} linkTo={"/admin/add-quiz"} searchPlcehoder={"Search by title"} onSearch={handleSearch} displayFilterBtn={true} onFilter={handleFilter} />
 
                 {!loading ? (
                     <div className="mx-auto max-w-screen-xl px-4">
@@ -131,13 +185,13 @@ const QuizList = () => {
                                                     </span>
                                                 </td>
                                                 <td className="px-4 py-3 relative">
-                                                    <button onClick={() => toggleRowDropdown(quiz._id)} id={`apple-imac-27-dropdown-button-${quiz._id}`} className="inline-flex items-center text-sm font-medium hover:bg-gray-100 text-center text-gray-500 hover:text-gray-800 rounded-lg focus:outline-none " type="button">
+                                                    <button onClick={() => toggleRowDropdown(quiz._id)} className="inline-flex items-center text-sm font-medium hover:bg-gray-100 text-center text-gray-500 hover:text-gray-800 rounded-lg focus:outline-none " type="button">
                                                         <svg className="w-5 h-5" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                                                             <path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM16 12a2 2 0 100-4 2 2 0 000 4z" />
                                                         </svg>
                                                     </button>
                                                     {/* Drop down */}
-                                                    <div ref={rowDropdownRef} id={`apple-imac-27-dropdown-${quiz._id}`} className={`z-10 w-44 bg-white rounded divide-y divide-gray-100 shadow absolute right-0 ${activeRowDropdown === quiz._id ? 'block' : 'hidden'} ${index >= quizListResult.length - 2 ? '-top-28' : 'top-10'}`}>
+                                                    <div ref={rowDropdownRef} className={`z-10 w-44 bg-white rounded divide-y divide-gray-100 shadow absolute right-0 ${activeRowDropdown === quiz._id ? 'block' : 'hidden'} ${index >= quizListResult.length - 2 ? '-top-28' : 'top-10'}`}>
                                                         <ul className="py-1 text-sm" aria-labelledby={`apple-imac-27-dropdown-button-${quiz._id}`}>
                                                             <li>
                                                                 <button onClick={() => openEditQuiz(quiz)} type="button" className="flex w-full items-center py-2 px-4 hover:bg-gray-100 text-gray-700 ">
@@ -191,52 +245,42 @@ const QuizList = () => {
                     <div
                         className="fixed top-0 left-0 z-50 w-full h-screen bg-black opacity-50"
                         onClick={handleFilter}></div>
-                    <div id="drawer-update-product-default"
+                    <div
                         className={`fixed top-0 right-0 z-50 w-full h-screen max-w-sm p-4 overflow-y-auto transition-transform ${isFilterDrawerOpen ? 'translate-x-0' : 'translate-x-full'
                             } bg-white`}
                         tabIndex="-1"
                         aria-labelledby="drawer-label">
-                        <h5 id="drawer-label" class="inline-flex items-center mb-6 text-sm font-semibold text-gray-500 uppercase">Update Product</h5>
+                        <h5 class="inline-flex items-center mb-6 text-sm font-semibold text-gray-500 uppercase">Filter List</h5>
                         <button onClick={handleFilter} type="button" data-drawer-dismiss="drawer-update-product-default" aria-controls="drawer-update-product-default" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 absolute top-2.5 right-2.5 inline-flex items-center">
                             <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
                             <span class="sr-only">Close menu</span>
                         </button>
-                        <form action="#">
+                        <form onSubmit={formik.handleSubmit}>
                             <div class="space-y-4">
                                 <div>
-                                    <label for="name" class="block mb-2 text-sm font-medium text-gray-900">Name</label>
-                                    <input type="text" name="title" id="name" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 " value="Apple iMac 27&ldquo;" placeholder="Type product name" required="" />
-                                </div>
-                                <div>
-                                    <label for="brand" class="block mb-2 text-sm font-medium text-gray-900">Brand</label>
-                                    <input type="text" name="title" id="brand" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 " value="Apple" placeholder="Product brand" required="" />
-                                </div>
-                                <div>
-                                    <label for="price" class="block mb-2 text-sm font-medium text-gray-900">Price</label>
-                                    <input type="number" name="price" id="price" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 " value="2999" placeholder="$2999" required="" />
-                                </div>
-                                <div>
-                                    <label for="category" class="block mb-2 text-sm font-medium text-gray-900">Category</label>
-                                    <select id="category" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 ">
-                                        <option selected="">Electronics</option>
-                                        <option value="TV">TV/Monitors</option>
-                                        <option value="PC">PC</option>
-                                        <option value="GA">Gaming/Console</option>
-                                        <option value="PH">Phones</option>
+                                    <label class="block mb-2 text-sm font-medium text-gray-900">Quiz Category</label>
+                                    <select name="quiz_category" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 " onChange={formik.handleChange}
+                                        value={formik.values.quiz_category}>
+                                        <option value="" disabled>Select a category</option>
+                                        {quizCategoryListResult.map((category) => (
+                                            <option key={category._id} value={category._id}>
+                                                {category.title}
+                                            </option>
+                                        ))}
                                     </select>
+                                    {formik.touched.quiz_category && formik.errors.quiz_category && (
+                                        <div className="text-red-500">{formik.errors.quiz_category}</div>
+                                    )}
                                 </div>
-                                <div>
-                                    <label for="description" class="block mb-2 text-sm font-medium text-gray-900">Description</label>
-                                    <textarea id="description" rows="8" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary-500 focus:border-primary-500 " placeholder="Enter event description here">Standard glass, 3.8GHz 8-core 10th-generation Intel Core i7 processor, Turbo Boost up to 5.0GHz, 16GB 2666MHz DDR4 memory, Radeon Pro 5500 XT with 8GB of GDDR6 memory, 256GB SSD storage, Gigabit Ethernet, Magic Mouse 2, Magic Keyboard - US</textarea>
-                                </div>
+
                             </div>
                             <div class="bottom-0 left-0 flex justify-center w-full pb-4 mt-4 space-x-4 sm:absolute sm:px-4 sm:mt-0">
                                 <button type="submit" class="w-full justify-center text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center ">
-                                    Update
+                                    Search
                                 </button>
-                                <button type="button" class="w-full justify-center text-red-600 inline-flex items-center hover:text-white border border-red-600 hover:bg-red-600 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">
+                                <button onClick={getQuizList} type="button" class="w-full justify-center text-red-600 inline-flex items-center hover:text-white border border-red-600 hover:bg-red-600 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">
                                     <svg aria-hidden="true" class="w-5 h-5 mr-1 -ml-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"></path></svg>
-                                    Delete
+                                    Reset
                                 </button>
                             </div>
                         </form>
