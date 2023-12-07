@@ -57,7 +57,8 @@ const MainLayout = () => {
         { route_to: "/admin", label: "Admins" },
         { route_to: "/admin/users", label: "Users" },
         { route_to: "/admin/quiz-categories", label: "Quiz Categories" },
-        { route_to: "/admin/quizzes", label: "Quizzes" }
+        { route_to: "/admin/quizzes", label: "Quizzes" },
+        { route_to: "/admin/quiz-results", label: "Quiz Results" },
     ];
 
     const activeComponent = location.pathname;

@@ -19,6 +19,8 @@ import QuestionList from '../pages/question_list';
 import AddQuestion from '../pages/add_question';
 import ShowQuestionDetails from '../pages/show_question_details';
 import UpdateQuestion from '../pages/update_question';
+import QuizResultList from '../pages/quiz_result_list';
+import ShowQuizResultDetails from '../pages/show_quiz_result_details';
 
 function App() {
   return (
@@ -43,6 +45,8 @@ function App() {
           <Route path='add-question/:id' element={<AddQuestion />} />
           <Route path='show-question-details/:id' element={<ShowQuestionDetails />} />
           <Route path='update-question/:id' element={<UpdateQuestion />} />
+          <Route path='quiz-results' element={<QuizResultList />} />
+          <Route path='show-quiz-result-details/:id' element={<ShowQuizResultDetails />} />
         </Route>
       </Routes>
     </Router>
